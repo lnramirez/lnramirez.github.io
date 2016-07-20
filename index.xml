@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Bajoneando Blog</title>
-    <link>http://lnramirez.github.io/</link>
+    <link>https://lnramirez.github.io/</link>
     <description>Recent content on Bajoneando Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Mon, 18 Jul 2016 17:28:12 -0400</lastBuildDate>
-    <atom:link href="http://lnramirez.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://lnramirez.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>And now we are using Hugo</title>
-      <link>http://lnramirez.github.io/post/and-now-we-are-using-hugo/</link>
+      <link>https://lnramirez.github.io/post/and-now-we-are-using-hugo/</link>
       <pubDate>Mon, 18 Jul 2016 17:28:12 -0400</pubDate>
       
-      <guid>http://lnramirez.github.io/post/and-now-we-are-using-hugo/</guid>
+      <guid>https://lnramirez.github.io/post/and-now-we-are-using-hugo/</guid>
       <description>&lt;p&gt;A quick story on this site is as follow.&lt;/p&gt;
 
 &lt;ol&gt;
@@ -149,10 +149,10 @@ using Mongoer but let&amp;rsquo;s leave that to for a next post.&lt;/p&gt;
     
     <item>
       <title>What are you going to write that is worthy of me? </title>
-      <link>http://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/</link>
+      <link>https://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/</link>
       <pubDate>Mon, 08 Jun 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/</guid>
+      <guid>https://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/</guid>
       <description>&lt;p&gt;What are you going to write that is worthy of me?&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;JJ Abrams&lt;/em&gt;&lt;/p&gt;
@@ -204,10 +204,10 @@ I&amp;rsquo;m using clojurescript, facebook-react with OM&amp;rsquo;s help&lt;/p
     
     <item>
       <title>Groovy scripting</title>
-      <link>http://lnramirez.github.io/post/groovy-scripting/</link>
+      <link>https://lnramirez.github.io/post/groovy-scripting/</link>
       <pubDate>Sun, 26 Oct 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/groovy-scripting/</guid>
+      <guid>https://lnramirez.github.io/post/groovy-scripting/</guid>
       <description>&lt;p&gt;I fix things now and then, more often tweak HTML and make scripts to do things.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Dennis Ritchie&lt;/em&gt;&lt;/p&gt;
@@ -425,10 +425,10 @@ ant.echo( &amp;quot;Run script using: \&#39;java -jar ${destFile} ...\&#39;&amp;
     
     <item>
       <title>Securing your application</title>
-      <link>http://lnramirez.github.io/post/securing-your-application/</link>
+      <link>https://lnramirez.github.io/post/securing-your-application/</link>
       <pubDate>Fri, 08 Aug 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/securing-your-application/</guid>
+      <guid>https://lnramirez.github.io/post/securing-your-application/</guid>
       <description>&lt;p&gt;Back in june I access bajoneando only to find that I had a new entry on my blog, which I didn&amp;rsquo;t remember doing it. When I checked the data it was empty, just had the date 6/2/2014. It occurred to me that somebody might have checked my password at github (it was hardcoded) and tried to add something. So I removed it and continue with my life. After a while it happened again. And well it just happened yesterday. &lt;em&gt;Sigh&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;I decided I should invest some time in really finding out what the problem was.&lt;/p&gt;
@@ -493,10 +493,10 @@ public String addEntry(@ModelAttribute(value=&amp;quot;blogEntry&amp;quot; value
     
     <item>
       <title>Composing Scala and Java futures</title>
-      <link>http://lnramirez.github.io/post/composing-scala-and-java-futures/</link>
+      <link>https://lnramirez.github.io/post/composing-scala-and-java-futures/</link>
       <pubDate>Mon, 28 Apr 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/composing-scala-and-java-futures/</guid>
+      <guid>https://lnramirez.github.io/post/composing-scala-and-java-futures/</guid>
       <description>&lt;p&gt;For the last two years I have gravitated towards Scala and Functional programming. My work in that area has been focused into concurrency and especially &lt;em&gt;AKKA&lt;/em&gt; interacting with the &lt;em&gt;Atmosphere Framework&lt;/em&gt;.&lt;/p&gt;
 
 &lt;p&gt;I&amp;rsquo;ve been using AKKA in its Scala version and Atmosphere is Java. Although I will love to write only Scala code, over and over again you need to interface with Java due to legacy code or because there aren&amp;rsquo;t Scala libraries as mature as Java. That being the case of Atmosphere, per sites description&lt;/p&gt;
@@ -557,10 +557,10 @@ future.get();
     
     <item>
       <title>From Cloudfoundry to Openshift</title>
-      <link>http://lnramirez.github.io/post/from-cloudfoundry-to-openshift/</link>
+      <link>https://lnramirez.github.io/post/from-cloudfoundry-to-openshift/</link>
       <pubDate>Sun, 27 Oct 2013 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/from-cloudfoundry-to-openshift/</guid>
+      <guid>https://lnramirez.github.io/post/from-cloudfoundry-to-openshift/</guid>
       <description>&lt;p&gt;The first time I deployed lnramirez at Cloudfoundry I told myself it wouldn&amp;rsquo;t last forever. I knew it. It happened. On jun 5th I got an email telling me Cloudfoundry V1 was going to be closed on jun 30th and I could migrate my applications to V2 a.k.a. GoPivotal which will be a paid service. Bummer.&lt;/p&gt;
 
 &lt;p&gt;I run my own blog as a hobbie and obviously I haven&amp;rsquo;t been able to monetize it at all. There&amp;rsquo;s no way I was going to pay it. After it was shutdown on june 30th I sent an email to GoPivotal team requesting they send me a backup of my MongoDb database, they were really nice and send me dump files.&lt;/p&gt;
@@ -602,10 +602,10 @@ future.get();
     
     <item>
       <title>Bajoneando.com and Lolotiquillo 0.1.6 release</title>
-      <link>http://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/</link>
+      <link>https://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/</link>
       <pubDate>Fri, 08 Feb 2013 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/</guid>
+      <guid>https://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/</guid>
       <description>&lt;p&gt;###Bajoneando.com###&lt;/p&gt;
 
 &lt;p&gt;If you have checked my code in &lt;a href=&#34;https://github.com/lnramirez&#34;&gt;github&lt;/a&gt; you&amp;rsquo;d know by now that my packages are named &lt;strong&gt;com.bajoneando&lt;/strong&gt;. Also one of my early entries on the blog was about the &lt;a href=&#34;http://lnramirez.cloudfoundry.com/blog/4f7f4cf4269873031146eecd/Bajoneando+meaning&#34;&gt;meaning of Bajoneando&lt;/a&gt;.&lt;/p&gt;
@@ -628,10 +628,10 @@ future.get();
     
     <item>
       <title>Migrating from Dojo 1.7 to 2.x</title>
-      <link>http://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/</link>
+      <link>https://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/</link>
       <pubDate>Thu, 07 Feb 2013 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/</guid>
+      <guid>https://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/</guid>
       <description>&lt;p&gt;Throughout superbowl weekend I started migrating to a newer version of Dojo, especifically from Dojo 1.7.2 to 1.8.3. One resource that help me a lot through the processs was &lt;a href=&#34;http://dojotoolkit.org/reference-guide/1.8/releasenotes/migration-2.0.html&#34;&gt;Dojo 1.x to 2.0 migration guide&lt;/a&gt; I must say that I built my own Dojo version, it&amp;rsquo;s supposed to optimize it to your needs but to tell you the truth I just did it for the sake of doing it.&lt;/p&gt;
 
 &lt;p&gt;The &lt;a href=&#34;http://dojotoolkit.org/documentation/tutorials/1.8/build/&#34;&gt;Creating Builds&lt;/a&gt; tutorial is more than helpful but brings a lot of information, in summary you need to create two build files and run it. I leave you the two files (links to gist) that might be good enough to just build it.&lt;/p&gt;
@@ -696,10 +696,10 @@ script.get({
     
     <item>
       <title>You are only coming through in waves</title>
-      <link>http://lnramirez.github.io/post/you-are-only-coming-through-in-waves/</link>
+      <link>https://lnramirez.github.io/post/you-are-only-coming-through-in-waves/</link>
       <pubDate>Thu, 10 Jan 2013 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/you-are-only-coming-through-in-waves/</guid>
+      <guid>https://lnramirez.github.io/post/you-are-only-coming-through-in-waves/</guid>
       <description>&lt;p&gt;Happy new year! it&amp;rsquo;s been such a long time since last post but life has been crazier than ever, what a year I had in 2012, parenthood, two jobs, my blog I could go on all day but moving on.&lt;/p&gt;
 
 &lt;p&gt;I decided to finally upgrade my tools, gradle from b1.0 to 1.1, jdk6 to jdk7, these are my latest tools&lt;/p&gt;
@@ -767,10 +767,10 @@ Updating lnramirez... OK
     
     <item>
       <title>Using Mongo and GridFS to store images</title>
-      <link>http://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/</link>
+      <link>https://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/</link>
       <pubDate>Sun, 26 Aug 2012 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/</guid>
+      <guid>https://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/</guid>
       <description>&lt;p&gt;GridFS is Mongo specification to store files, claims to be better than file system but to me querying files it&amp;rsquo;s what makes it lots better and it&amp;rsquo;s very straight forward.&lt;/p&gt;
 
 &lt;p&gt;I am using a POJO to use within the service that performs the operations&lt;/p&gt;
@@ -878,7 +878,7 @@ Updating lnramirez... OK
 
 &lt;p&gt;The post would not be complete without an example of a file hosted in this casa. I have taken keen interest in this JVM language for the last month. I am seriously contemplating moving my efforts into that direction.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://lnramirez.github.io/images/download/503a1791c75e2bb846f5d154&#34; alt=&#34;Scala&#34; /&gt;*&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://lnramirez.github.io/images/download/503a1791c75e2bb846f5d154&#34; alt=&#34;Scala&#34; /&gt;*&lt;/p&gt;
 
 &lt;p&gt;You can see the rest of the code at: &lt;a href=&#34;https://github.com/lnramirez/lnramirez&#34;&gt;https://github.com/lnramirez/lnramirez&lt;/a&gt;&lt;/p&gt;
 
@@ -888,22 +888,22 @@ Updating lnramirez... OK
     
     <item>
       <title>From Intipuca to Jucuapa</title>
-      <link>http://lnramirez.github.io/post/from-intipuca-to-jucuapa/</link>
+      <link>https://lnramirez.github.io/post/from-intipuca-to-jucuapa/</link>
       <pubDate>Wed, 01 Aug 2012 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/from-intipuca-to-jucuapa/</guid>
+      <guid>https://lnramirez.github.io/post/from-intipuca-to-jucuapa/</guid>
       <description>&lt;p&gt;Long time no posting but that doesn&amp;rsquo;t mean long time no coding, au contraire! I&amp;rsquo;ve been coding a lot of neato stuff. I&amp;rsquo;ll come back to give you a full update, I&amp;rsquo;ll leave you a hint though; Where&amp;rsquo;s this screen hosted?&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://lnramirez.github.io/images/download/50188b3d2d95d47dae8311ec&#34; alt=&#34;From Intipuca to Jucuapa&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://lnramirez.github.io/images/download/50188b3d2d95d47dae8311ec&#34; alt=&#34;From Intipuca to Jucuapa&#34; /&gt;&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>On Map Reduce - Part 2</title>
-      <link>http://lnramirez.github.io/post/on-map-reduce-part-2/</link>
+      <link>https://lnramirez.github.io/post/on-map-reduce-part-2/</link>
       <pubDate>Tue, 03 Jul 2012 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/on-map-reduce-part-2/</guid>
+      <guid>https://lnramirez.github.io/post/on-map-reduce-part-2/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://lnramirez.cloudfoundry.com/blog/4fedfebe4a14fb8d9f5e4e07/On%20Map%20Reduce%20-%20Part%201&#34;&gt;On Map Reduce - Part 1&lt;/a&gt; I introduced the use of a map reduce to retrieve the latest entry on the blog.&lt;/p&gt;
 
 &lt;p&gt;The document where we store blog entries looks like&lt;/p&gt;
@@ -1010,10 +1010,10 @@ value:emittedObject
     
     <item>
       <title>On Map Reduce - Part 1</title>
-      <link>http://lnramirez.github.io/post/on-map-reduce-part-1/</link>
+      <link>https://lnramirez.github.io/post/on-map-reduce-part-1/</link>
       <pubDate>Fri, 29 Jun 2012 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/on-map-reduce-part-1/</guid>
+      <guid>https://lnramirez.github.io/post/on-map-reduce-part-1/</guid>
       <description>&lt;p&gt;One of the hype things nowadays is Map Reduce, I won&amp;rsquo;t talk about it, but I&amp;rsquo;ll leave you this &lt;a href=&#34;http://lmddgtfy.co.cc/?q=map+reduce&#34;&gt;useful link&lt;/a&gt; that you&amp;rsquo;ll definitely find interesting.&lt;/p&gt;
 
 &lt;p&gt;I don&amp;rsquo;t have a particular necessity on using a map reduce for my big data, but I thought I could experiment with it.&lt;/p&gt;
@@ -1052,10 +1052,10 @@ value:emittedObject
     
     <item>
       <title>Huizúcar-SNAPSHOT</title>
-      <link>http://lnramirez.github.io/post/huizucar-snapshot/</link>
+      <link>https://lnramirez.github.io/post/huizucar-snapshot/</link>
       <pubDate>Sat, 09 Jun 2012 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/huizucar-snapshot/</guid>
+      <guid>https://lnramirez.github.io/post/huizucar-snapshot/</guid>
       <description>&lt;p&gt;I was not planning deploying SNAPSHOTS but I was adding security functionality and felt so tempted to deploy it and I am so happy I did.&lt;/p&gt;
 
 &lt;p&gt;Although the only new feauture is login/logout functionality and securing edit and add blog entries I think it was worthy doing it, and since at least as of today deploying new version doesn&amp;rsquo;t mean spend more money, why not?&lt;/p&gt;
@@ -1066,10 +1066,10 @@ value:emittedObject
     
     <item>
       <title>Iteration Guaymango release notes</title>
-      <link>http://lnramirez.github.io/post/iteration-guaymango-release-notes/</link>
+      <link>https://lnramirez.github.io/post/iteration-guaymango-release-notes/</link>
       <pubDate>Fri, 01 Jun 2012 00:00:00 +0000</pubDate>
       
-      <guid>http://lnramirez.github.io/post/iteration-guaymango-release-notes/</guid>
+      <guid>https://lnramirez.github.io/post/iteration-guaymango-release-notes/</guid>
       <description>
 
 &lt;p&gt;Iteration Guaymango Rulz!&lt;/p&gt;
