@@ -1,0 +1,239 @@
+    <!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		<meta name="generator" content="Hugo 0.16" />
+		<title>Iteration Guaymango release notes &middot; Bajoneando Blog</title>
+		<link rel="shortcut icon" href="http://lnramirez.github.ioimages/favicon.ico">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/style.css">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://lnramirez.github.io'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://lnramirez.github.ioabout'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Iteration Guaymango release notes</h1>
+                    <h2 class="headline">
+                    June 1, 2012 
+                    <br>
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    
+
+<p>Iteration Guaymango Rulz!</p>
+
+<p>oh boy! I cannot believe how much work I did this iteration.</p>
+
+<h3 id="new-features">New features</h3>
+
+<h4 id="google-code-prettify">Google code prettify</h4>
+
+<p>We added css to our code, thanks to markdown awesome html sintax now something like:</p>
+
+<pre><code>@RequestMapping(value=&quot;/update&quot;, method=RequestMethod.PUT, headers=&quot;Accept=application/json&quot;)
+@ResponseStatus(HttpStatus.OK)
+public void updateEntry(@RequestBody BlogEntry blogEntry) {
+    blogEntry.setLastUpdateDate(new Date());
+    blogEntry.setPrintableHtml(markdownProcessor.markdown(blogEntry.getArticle()));
+    blogEntryRepository.save(blogEntry);
+}
+</code></pre>
+
+<p>is possible</p>
+
+<h4 id="sitemesh-2-templating">Sitemesh 2 templating</h4>
+
+<p>Probably this ain&rsquo;t that cool to the bare eye, nonetheless is so good for developers. Before all pages had embedded css and boiler html code to look alike. Now every thing goes so smooth.</p>
+
+<p><em>About</em> page has only this code</p>
+
+<pre><code>&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;title&gt;About&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;header&gt;
+            &lt;h2&gt;Bajoneando&lt;/h2&gt;
+        &lt;/header&gt;
+        &lt;article&gt;
+            &lt;strong&gt;Bajoneando meaning&lt;/strong&gt;
+            &lt;p&gt;
+                Bajonear is a salvadorean-spanish verb that you use to refer
+                to the action of eating after hours, probably after a party or 
+                a long day at work. 
+                You can use it when you are famished and heading towards to
+                grab a bite, something like &lt;em&gt;I am going to bajonear&lt;/em&gt;&lt;/p&gt;
+            &lt;p&gt;
+                I am Bajoneando as you can see in the footer because I usually 
+                program at work only but nowadays I have been feeling like 
+                programming after hours with a cup of joe, nuts, dried fruit 
+                or any paleo snack that I can eat
+            &lt;/p&gt;
+        &lt;/article&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>yet produces a beautiful page go to  <a href="http://lnramirez.cloudfoundry.com/about/" title="About page">About page</a> and see it for yourself.</p>
+
+<h4 id="article-editor">Article editor</h4>
+
+<p>Well not everybody is supposed to add, edit article but I have left it as is, like I said in the beginning <em>please don&rsquo;t be mean =)</em> anyhow, we can add, update an entry and see a preview immediatly, no refresh =D thanks to the awesome dojo toolkit.</p>
+
+<h4 id="pagination">Pagination</h4>
+
+<p>Yup pagination was added as well, nothing too fancy just a previous and later entries links, I am hopping to write lots more entries everynow and then.  Right now we have 5 entries per page, sorted <strong>DESC</strong> on published Date</p>
+
+<h4 id="html5">HTML5</h4>
+
+<p>I know, I know, I should not brag about it but my site is HTML5 complaint or at least I check up my generated html at <a href="http://validator.w3.org/" title="Markup Validation Service">Markup Validation Service</a></p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                
+                        <img class="avatar" src="http://lnramirez.github.ioimages/avatar.png">
+                        <div>
+                            <span class="dark"></span>
+                            <span></span>
+                        </div>
+                    
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2flnramirez.github.io%2fpost%2fiteration-guaymango-release-notes%2f - Iteration%20Guaymango%20release%20notes "><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/and-now-we-are-using-hugo/">And now we are using Hugo<aside class="dates">Jul 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/">What are you going to write that is worthy of me? <aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/groovy-scripting/">Groovy scripting<aside class="dates">Oct 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/securing-your-application/">Securing your application<aside class="dates">Aug 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/composing-scala-and-java-futures/">Composing Scala and Java futures<aside class="dates">Apr 28</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/from-cloudfoundry-to-openshift/">From Cloudfoundry to Openshift<aside class="dates">Oct 27</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/">Bajoneando.com and Lolotiquillo 0.1.6 release<aside class="dates">Feb 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/">Migrating from Dojo 1.7 to 2.x<aside class="dates">Feb 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/you-are-only-coming-through-in-waves/">You are only coming through in waves<aside class="dates">Jan 10</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/">Using Mongo and GridFS to store images<aside class="dates">Aug 26</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+    <p class="small">
+    
+        © Copyright 2016 
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://lnramirez.github.iojs/main.js"></script>
+<script src="http://lnramirez.github.iojs/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>

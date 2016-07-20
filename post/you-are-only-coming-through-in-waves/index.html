@@ -1,0 +1,232 @@
+    <!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		<meta name="generator" content="Hugo 0.16" />
+		<title>You are only coming through in waves &middot; Bajoneando Blog</title>
+		<link rel="shortcut icon" href="http://lnramirez.github.ioimages/favicon.ico">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/style.css">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://lnramirez.github.io'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://lnramirez.github.ioabout'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>You are only coming through in waves</h1>
+                    <h2 class="headline">
+                    January 10, 2013 
+                    <br>
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    <p>Happy new year! it&rsquo;s been such a long time since last post but life has been crazier than ever, what a year I had in 2012, parenthood, two jobs, my blog I could go on all day but moving on.</p>
+
+<p>I decided to finally upgrade my tools, gradle from b1.0 to 1.1, jdk6 to jdk7, these are my latest tools</p>
+
+<pre><code>$ gradle -v
+
+------------------------------------------------------------
+Gradle 1.1
+------------------------------------------------------------
+
+Gradle build time: Tuesday, July 31, 2012 1:24:32 PM UTC
+Groovy: 1.8.6
+Ant: Apache Ant(TM) version 1.8.4 compiled on May 22 2012
+Ivy: 2.2.0
+JVM: 1.7.0_09 (Oracle Corporation 23.5-b02)
+OS: Mac OS X 10.7.5 x86_64
+</code></pre>
+
+<p>my steps were:</p>
+
+<ul>
+<li>update gradle using macport to ver 1.1</li>
+<li>update jdk to ver 1.7</li>
+<li>build the app again</li>
+<li>update source version in build.gradle</li>
+<li>build the app again</li>
+<li>deploy it back to cloudfoundry+</li>
+</ul>
+
+<p>I&rsquo;ve been having more spare time lately so I hope I can introduce a couple of new feautures every now and then.</p>
+
+<p>+ well this was not that easy peasy</p>
+
+<pre><code>$vmc apps
+name            status    usage      runtime   url                             
+caldecott       stopped   1 x 64M    ruby18    caldecott-ae140.cloudfoundry.com
+lnramirez       running   1 x 512M   java      lnramirez.cloudfoundry.com  
+</code></pre>
+
+<p>as you can see my app had runtime set to java default ver which as of today is 1.6, and no it couldn&rsquo;t hot update it. Dirty but quick fix around: deploy it as a new app lnramirez-new selecting java7 as runtime</p>
+
+<pre><code>$vmc apps
+name            status    usage      runtime   url                             
+caldecott       stopped   1 x 64M    ruby18    caldecott-ae140.cloudfoundry.com
+lnramirez       running   1 x 512M   java      lnramirez.cloudfoundry.com      
+lnramirez-new   running   1 x 512M   java7     lnramirez-new.cloudfoundry.com  
+</code></pre>
+
+<p>then map the new version to lnramirez url and remove the old one</p>
+
+<pre><code>$ vmc map lnramirez-new lnramirez.cloudfoundry.com
+Updating lnramirez-new... OK
+$ vmc unmap lnramirez 
+1: lnramirez.cloudfoundry.com
+Which URL?&gt; 1         
+
+Updating lnramirez... OK
+</code></pre>
+
+<p>Voilà! everything good then probably I should remove my old lnramirez but I&rsquo;ll have it around so I can do a hot deployment next time.</p>
+
+<p>probably I could have done using some CF commands but I always wanted to try mapping and unmapping, a couple of times -shame on me- I deploy a newer version and it doesn&rsquo;t work. So this way I know how to do a hot deployment with out affecting my users :)</p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                
+                        <img class="avatar" src="http://lnramirez.github.ioimages/avatar.png">
+                        <div>
+                            <span class="dark"></span>
+                            <span></span>
+                        </div>
+                    
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2flnramirez.github.io%2fpost%2fyou-are-only-coming-through-in-waves%2f - You%20are%20only%20coming%20through%20in%20waves "><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/and-now-we-are-using-hugo/">And now we are using Hugo<aside class="dates">Jul 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/">What are you going to write that is worthy of me? <aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/groovy-scripting/">Groovy scripting<aside class="dates">Oct 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/securing-your-application/">Securing your application<aside class="dates">Aug 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/composing-scala-and-java-futures/">Composing Scala and Java futures<aside class="dates">Apr 28</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/from-cloudfoundry-to-openshift/">From Cloudfoundry to Openshift<aside class="dates">Oct 27</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/">Bajoneando.com and Lolotiquillo 0.1.6 release<aside class="dates">Feb 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/">Migrating from Dojo 1.7 to 2.x<aside class="dates">Feb 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/you-are-only-coming-through-in-waves/">You are only coming through in waves<aside class="dates">Jan 10</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/">Using Mongo and GridFS to store images<aside class="dates">Aug 26</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+    <p class="small">
+    
+        © Copyright 2016 
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://lnramirez.github.iojs/main.js"></script>
+<script src="http://lnramirez.github.iojs/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>

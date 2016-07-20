@@ -1,0 +1,382 @@
+    <!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		<meta name="generator" content="Hugo 0.16" />
+		<title>Groovy scripting &middot; Bajoneando Blog</title>
+		<link rel="shortcut icon" href="http://lnramirez.github.ioimages/favicon.ico">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/style.css">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://lnramirez.github.io'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://lnramirez.github.ioabout'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Groovy scripting</h1>
+                    <h2 class="headline">
+                    October 26, 2014 
+                    <br>
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    <p>I fix things now and then, more often tweak HTML and make scripts to do things.</p>
+
+<p><em>Dennis Ritchie</em></p>
+
+<p>There was a time in my life when the only language I knew was java. One thing that always bothered me was that more often than not just writing the simplest program required too much ceremony. Then I decided that I would learn a scripting language. Python, Ruby, Perl  were on my table, yet again the narrowed java developer mind couldn&rsquo;t adapt so I went for Groovy. Was fairly familiar and had access to all java glory.</p>
+
+<p>I am no groovy expert and I don&rsquo;t intend to do it. It&rsquo;s the second language I put some effort to learn it but I couldn&rsquo;t master it at all. I do some scripting specially when I need to query databases or create files.</p>
+
+<p>Cassandra is a NoSQL databases that happens to be very difficult to query since has no relationships, you can say that maybe we are doing things wrong, but I think eventually you&rsquo;d want to do operations over your data. So one quick way to do it is with groovy.</p>
+
+<p>It&rsquo;s a very simple script, receives a couple of parameters, connects to cassandra and prints some info to the output in a loop.</p>
+
+<pre><code>@Grab('org.slf4j:slf4j-api:1.7.2')
+@Grab('commons-codec:commons-codec:1.9')
+@Grab('com.netflix.astyanax:astyanax-core:1.56.37')
+@Grab('com.netflix.astyanax:astyanax-thrift:1.56.37')
+@Grab('com.netflix.astyanax:astyanax-cassandra:1.56.37')
+
+import com.netflix.astyanax.*
+import com.netflix.astyanax.impl.AstyanaxConfigurationImpl
+import com.netflix.astyanax.connectionpool.impl.*
+import com.netflix.astyanax.connectionpool.OperationResult
+import com.netflix.astyanax.thrift.ThriftFamilyFactory
+import com.netflix.astyanax.model.ColumnFamily
+import com.netflix.astyanax.connectionpool.exceptions.ConnectionException
+import com.netflix.astyanax.serializers.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+def cli = new CliBuilder(usage: 'feed.groovy -[cdflms] [date] [prefix]')
+
+def formatPattern = 'dd/MM/yyyy HH:mm'
+
+cli.with {
+  h longOpt: 'help', 'Show usage information'
+  d longOpt: 'database-file', args: 1, argName: 'file', 'database properties file &quot;file&quot; e.g. local.properties'
+  u longOpt: 'user', args: 1, argName: 'user', 'user id'
+}
+
+def options = cli.parse(args)
+if (!options) {
+  return
+}
+
+if (options.h) {
+  cli.usage()
+  return
+}
+
+def now = new Date().format(formatPattern)
+
+def database = options.d?:'local.properties'
+
+def userId = options.u
+
+def props = new Properties()
+new File(database).withInputStream { 
+  stream -&gt; props.load(stream) 
+}
+
+def clusterName = props[&quot;cassandra.cluster.name&quot;]
+def keyspaceName = props[&quot;cassandra.keyspace.name&quot;]
+def seeds = props[&quot;cassandra.seeds&quot;]
+
+AstyanaxContext context = new AstyanaxContext.Builder().forCluster(clusterName).forKeyspace(keyspaceName)
+ .withAstyanaxConfiguration(new AstyanaxConfigurationImpl().setCqlVersion(&quot;3.0.0&quot;).setTargetCassandraVersion(&quot;1.2&quot;)
+)
+ .withConnectionPoolConfiguration(new ConnectionPoolConfigurationImpl(clusterName+&quot;-&quot;+keyspaceName+&quot;_CONN_POOL&quot;)
+   .setPort(9160).setSeeds(seeds)
+ ).withConnectionPoolMonitor(new CountingConnectionPoolMonitor()).buildKeyspace(ThriftFamilyFactory.getInstance())
+
+context.start()
+Keyspace keyspace = context.getClient()
+
+def CF_TIMELINE = ColumnFamily.newColumnFamily(&quot;timeline&quot;, 
+    StringSerializer.get(),
+    StringSerializer.get())
+
+OperationResult result
+
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in))
+def str = 'y'
+while (str.equals('y')) {
+
+  result = keyspace.prepareQuery(CF_TIMELINE).withCql(&quot;SELECT * FROM timeline WHERE user_id = '${userId}'&quot;).execute()
+  result.getResult().getRows().each { row -&gt;
+    def columns = row.getColumns()
+    //do something funny here
+  }
+
+  str = br.readLine()
+}
+</code></pre>
+
+<p>This is very simple, the way to run it if you have groovy installed is</p>
+
+<pre><code>$&gt; groovy cassie.groovy -d load-test.properties -u auserid
+</code></pre>
+
+<p>Now there will be times when you want to share your script with someone else not initiated in groovy (let&rsquo;s call him a muggle) then how can you wrap this in a brand new jvm without groovy?  To package all this in a java project you&rsquo;d have to use:
+1. create a maven project (gradle is less code)
+2. create all the directories that come with that, src, main, resource, com.. blah blah blah
+3. set up your pom.xml with some plugin that will package it in one file (maven-one-jar) comes to mind.
+4. by now you are already using an IDE and is no longer a script file, is just a gigantic pain.</p>
+
+<p>well thank to <a href="http://docs.codehaus.org/display/GROOVY/WrappingGroovyScript">http://docs.codehaus.org/display/GROOVY/WrappingGroovyScript</a> post I was able to compile my script into a single jar <strong>but most importantly</strong> it will fetch also Grapes dependencies.</p>
+
+<pre><code>/*
+ * Copyright 2002-2007 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Wrap a script and groovy jars to an executable jar
+ */
+def cli = new CliBuilder()
+cli.h( longOpt: 'help', required: false, 'show usage information' )
+cli.d( longOpt: 'destfile', argName: 'destfile', required: false, args: 1, 'jar destintation filename, defaults to {mainclass}.jar' )
+cli.m( longOpt: 'mainclass', argName: 'mainclass', required: true, args: 1, 'fully qualified main class, eg. HelloWorld' )
+cli.c( longOpt: 'groovyc', required: false, 'Run groovyc' )
+
+//--------------------------------------------------------------------------
+def opt = cli.parse(args)
+if (!opt) { return }
+if (opt.h) {
+  cli.usage();
+  return
+}
+
+def mainClass = opt.m
+def scriptBase = mainClass.replace( '.', '/' )
+def scriptFile = new File( scriptBase + '.groovy' )
+if (!scriptFile.canRead()) {
+   println &quot;Cannot read script file: '${scriptFile}'&quot;
+   return
+}
+def destFile = scriptBase + '.jar'
+if (opt.d) {
+  destFile = opt.d
+}
+
+//--------------------------------------------------------------------------
+def ant = new AntBuilder()
+
+if (opt.c) {
+  ant.echo( &quot;Compiling ${scriptFile}&quot; )
+  org.codehaus.groovy.tools.FileSystemCompiler.main( [ scriptFile ] as String[] )
+}
+
+def GROOVY_HOME = new File( System.getenv('GROOVY_HOME') )
+if (!GROOVY_HOME.canRead()) {
+  ant.echo( &quot;Missing environment variable GROOVY_HOME: '${GROOVY_HOME}'&quot; )
+  return
+}
+
+def grapes = [] as HashSet
+ant.echo(&quot;Resolving grape dependencies&quot;)
+def scriptCode = scriptFile.text
+matcher = (scriptCode =~ /(@Grab\('(.*):(.*):(.*)'\))/)
+matcher.each() { dep -&gt;
+  ant.echo(&quot;found&quot;)
+ def uri = groovy.grape.Grape.resolve([autoDownload:true], [groupId: dep[2], artifactId: dep[3], version: dep[4]])
+ if (uri?.size()&gt;0) {
+  uri.each() { f -&gt;
+  ant.echo(&quot;Found dependency: ${f.toString()}&quot;)
+   grapes &lt;&lt; f
+  }
+ }
+} 
+
+ant.jar( destfile: destFile, compress: true, index: true ) {
+ fileset( dir: '.', includes: scriptBase + '*.class' )
+ zipgroupfileset( dir: GROOVY_HOME, includes: 'embeddable/groovy-all-*.jar' )
+ zipgroupfileset( dir: GROOVY_HOME, includes: 'lib/commons*.jar' )
+ grapes.each() { grape -&gt;
+   def grapeFile = new File(grape)
+   if (grapeFile.exists()) {
+       zipgroupfileset(dir: grapeFile.parent, includes: grapeFile.name)
+   }
+ }
+ manifest {
+    attribute( name: 'Main-Class', value: mainClass )
+  }
+}
+
+ant.echo( &quot;Run script using: \'java -jar ${destFile} ...\'&quot; )
+</code></pre>
+
+<p>then in order to do all the packaging you do</p>
+
+<pre><code>groovy GroovyWrapper -c -m cassie
+</code></pre>
+
+<p>this will create a jar <em>cassie.jar</em></p>
+
+<p>and to run it</p>
+
+<pre><code>java -Dgroovy.grape.enable=false -jar cassie.jar -d load-test.properties -u aUserId
+</code></pre>
+
+<p>voila you have a quick way to do scripts that use the good java libraries you love, in a single file and if you want to share it with muggles is very simple too.</p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                
+                        <img class="avatar" src="http://lnramirez.github.ioimages/avatar.png">
+                        <div>
+                            <span class="dark"></span>
+                            <span></span>
+                        </div>
+                    
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2flnramirez.github.io%2fpost%2fgroovy-scripting%2f - Groovy%20scripting "><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/and-now-we-are-using-hugo/">And now we are using Hugo<aside class="dates">Jul 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/">What are you going to write that is worthy of me? <aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/groovy-scripting/">Groovy scripting<aside class="dates">Oct 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/securing-your-application/">Securing your application<aside class="dates">Aug 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/composing-scala-and-java-futures/">Composing Scala and Java futures<aside class="dates">Apr 28</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/from-cloudfoundry-to-openshift/">From Cloudfoundry to Openshift<aside class="dates">Oct 27</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/">Bajoneando.com and Lolotiquillo 0.1.6 release<aside class="dates">Feb 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/">Migrating from Dojo 1.7 to 2.x<aside class="dates">Feb 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/you-are-only-coming-through-in-waves/">You are only coming through in waves<aside class="dates">Jan 10</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/">Using Mongo and GridFS to store images<aside class="dates">Aug 26</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+    <p class="small">
+    
+        © Copyright 2016 
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://lnramirez.github.iojs/main.js"></script>
+<script src="http://lnramirez.github.iojs/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>

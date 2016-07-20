@@ -1,0 +1,229 @@
+    <!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		<meta name="generator" content="Hugo 0.16" />
+		<title>Migrating from Dojo 1.7 to 2.x &middot; Bajoneando Blog</title>
+		<link rel="shortcut icon" href="http://lnramirez.github.ioimages/favicon.ico">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/style.css">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://lnramirez.github.io'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://lnramirez.github.ioabout'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Migrating from Dojo 1.7 to 2.x</h1>
+                    <h2 class="headline">
+                    February 7, 2013 
+                    <br>
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    <p>Throughout superbowl weekend I started migrating to a newer version of Dojo, especifically from Dojo 1.7.2 to 1.8.3. One resource that help me a lot through the processs was <a href="http://dojotoolkit.org/reference-guide/1.8/releasenotes/migration-2.0.html">Dojo 1.x to 2.0 migration guide</a> I must say that I built my own Dojo version, it&rsquo;s supposed to optimize it to your needs but to tell you the truth I just did it for the sake of doing it.</p>
+
+<p>The <a href="http://dojotoolkit.org/documentation/tutorials/1.8/build/">Creating Builds</a> tutorial is more than helpful but brings a lot of information, in summary you need to create two build files and run it. I leave you the two files (links to gist) that might be good enough to just build it.</p>
+
+<ul>
+<li><a href="https://gist.github.com/lnramirez/4733370">package.json</a></li>
+<li><a href="https://gist.github.com/lnramirez/f0739ca02fb136d063c6">lnramirez.profile.js</a></li>
+</ul>
+
+<p>Now, when it comes to the changes I had to do to the code I had to remove anything using the good <em>dojo.somemodule</em> for <em>require(&ldquo;somemodule&rdquo;)</em>, I will explain with code:</p>
+
+<p>In my 1.7 code I had</p>
+
+<pre><code>var xhrArgs = {
+    url: &quot;${pageContext.request.contextPath}/blog/single/&quot; + _id,
+    handleAs: &quot;json&quot;,
+    load: function(data) {return data;},
+    error: function(error) {return error;}
+}
+var deferred = dojo.xhrGet(xhrArgs);
+</code></pre>
+
+<p>as you can see I am using <em>dojo.xhrGet</em> in 2.X versions although there&rsquo;s suposed backward compatibility on using dojo. seems like my build file did something phony and totally refrained from liking it. Anyhow at some point it will change so no harm done you had to change it slightly</p>
+
+<pre><code>require([&quot;dojo/json&quot;,&quot;dojo/request/xhr&quot;,json,xhr) {
+    xhr.get(&quot;${pageContext.request.contextPath}/blog/single/&quot; + _id,{handleAs: &quot;json&quot;})
+        .then(function(blogentry) {
+        }
+}
+</code></pre>
+
+<p>And that&rsquo;s about it.</p>
+
+<p>Only thing really frustrated me was the use of script. If you go to the about <a href="about/">link</a> you will see my github and twitter accounts, there&rsquo;s an actual call to each of those sites to retrive my repositories and followers, and tweets and followers respectively. So accordingly to migration link <strong>dojo.xhr* and dojo.io.* have been replaced with dojo/request</strong> but when I tried using them it was impossible.</p>
+
+<p>the correct way to form the url is:</p>
+
+<ul>
+<li><a href="https://api.github.com/users/lnramirez?callback=dojo.io.script.jsonp_dojoIoScript1._jsonpCallback">https://api.github.com/users/lnramirez?callback=dojo.io.script.jsonp_dojoIoScript1._jsonpCallback</a></li>
+</ul>
+
+<p>but when I was using dojo/request module the url was getting tagled</p>
+
+<ul>
+<li><a href="https://api.github.com/users/lnramirez*[?&amp;]*callback=dojo.io.script.jsonp_dojoIoScript1._jsonpCallback">https://api.github.com/users/lnramirez*[?&amp;]*callback=dojo.io.script.jsonp_dojoIoScript1._jsonpCallback</a></li>
+</ul>
+
+<p>and also before <em>[?&amp;]</em> characters there was a CR, so beats me what was going on. My wild guess a bug.</p>
+
+<p>In order to make it work I had to use my old code just on the new fashion</p>
+
+<pre><code>require(&quot;dojo/io/script&quot;,script) {
+script.get({
+    url: &quot;https://api.github.com/users/lnramirez&quot;,
+            jsonp: &quot;callback&quot;
+    }).then(function(data_) {
+</code></pre>
+
+<p>and works like a charm.</p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                
+                        <img class="avatar" src="http://lnramirez.github.ioimages/avatar.png">
+                        <div>
+                            <span class="dark"></span>
+                            <span></span>
+                        </div>
+                    
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2flnramirez.github.io%2fpost%2fmigrating-from-dojo-17-to-2x%2f - Migrating%20from%20Dojo%201.7%20to%202.x "><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/and-now-we-are-using-hugo/">And now we are using Hugo<aside class="dates">Jul 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/">What are you going to write that is worthy of me? <aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/groovy-scripting/">Groovy scripting<aside class="dates">Oct 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/securing-your-application/">Securing your application<aside class="dates">Aug 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/composing-scala-and-java-futures/">Composing Scala and Java futures<aside class="dates">Apr 28</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/from-cloudfoundry-to-openshift/">From Cloudfoundry to Openshift<aside class="dates">Oct 27</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/">Bajoneando.com and Lolotiquillo 0.1.6 release<aside class="dates">Feb 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/">Migrating from Dojo 1.7 to 2.x<aside class="dates">Feb 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/you-are-only-coming-through-in-waves/">You are only coming through in waves<aside class="dates">Jan 10</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/">Using Mongo and GridFS to store images<aside class="dates">Aug 26</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+    <p class="small">
+    
+        © Copyright 2016 
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://lnramirez.github.iojs/main.js"></script>
+<script src="http://lnramirez.github.iojs/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>

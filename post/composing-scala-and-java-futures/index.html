@@ -1,0 +1,225 @@
+    <!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		<meta name="generator" content="Hugo 0.16" />
+		<title>Composing Scala and Java futures &middot; Bajoneando Blog</title>
+		<link rel="shortcut icon" href="http://lnramirez.github.ioimages/favicon.ico">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/style.css">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://lnramirez.github.io'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://lnramirez.github.ioabout'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Composing Scala and Java futures</h1>
+                    <h2 class="headline">
+                    April 28, 2014 
+                    <br>
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    <p>For the last two years I have gravitated towards Scala and Functional programming. My work in that area has been focused into concurrency and especially <em>AKKA</em> interacting with the <em>Atmosphere Framework</em>.</p>
+
+<p>I&rsquo;ve been using AKKA in its Scala version and Atmosphere is Java. Although I will love to write only Scala code, over and over again you need to interface with Java due to legacy code or because there aren&rsquo;t Scala libraries as mature as Java. That being the case of Atmosphere, per sites description</p>
+
+<blockquote>
+<p>The Atmosphere Framework provides the enterprise features required to build massive scalable and real time asynchronous applications using transports like WebSocket, Server Side Events and traditional Ajax Techniques.
+source: <a href="http://async-io.org/">async-io.org</a></p>
+</blockquote>
+
+<p>Trying to keep this to the point, atmosphere communicates with subscribers using Broadcaster interface</p>
+
+<pre><code>public interface Broadcaster {
+/**
+ * Broadcast the {@link Object} to all suspended responses, eg. invoke {@link AtmosphereHandler#onStateChange}.
+ *
+ * @param o the {@link Object} to be broadcasted
+ * @return a {@link Future} that can be used to synchronize using the {@link Future#get()}
+ */
+Future&lt;Object&gt; broadcast(Object o);
+//more code omitted
+}
+</code></pre>
+
+<p>you can invoke broadcast and treat it as a fire and forget operation</p>
+
+<pre><code>//Java code
+Broadcaster broadcaster = BroadcasterFactory.getDefault.lookup(target);
+broadcaster.broadcast(mymessage);
+</code></pre>
+
+<p>the broadcast method returns a future which makes it asynchronous, but what if you want to know if was able to broadcast the message? well, you could call get method on the future</p>
+
+<pre><code>//Java code
+Broadcaster broadcaster = BroadcasterFactory.getDefault.lookup(target);
+Future&lt;Object&gt; future = broadcaster.broadcast(mymessage);
+future.get();
+</code></pre>
+
+<p>simple right? well, it just so happen that by invoking .get() you are blocking the thread and therefore you are no longer asynchronously processing your broadcasts. One nice way to do it is by wrapping the Java future with a Scala one like so:</p>
+
+<pre><code>    val broadcastFuture = future {
+      val broadcast = x.broadcast(cmd)//this is the Java call
+      broadcast.get()//this is blocking in some thread
+    }
+    broadcastFuture.onComplete {
+      case Success(obj) =&gt;
+        log.debug(s&quot;$cmd delivered to $target&quot;)
+      case Failure(ex) =&gt;
+        log.error(s&quot;$cmd was not delivered to target&quot;) //invoke here your fallback method
+    }
+</code></pre>
+
+<p>is so simple and beautiful. I am so happy that all my concurrency knowledge comes from Scala. You see, although I remember writing a couple of synchronized methods in java I never did anything beyond homeworks and my ways to tackles this kind of problems are not polluted by the javaish way. Scala concurrency capabilities are so rich and simple.</p>
+
+<p>Probably next time I will show you how you can integrate Scala with Spring Framework.</p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                
+                        <img class="avatar" src="http://lnramirez.github.ioimages/avatar.png">
+                        <div>
+                            <span class="dark"></span>
+                            <span></span>
+                        </div>
+                    
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2flnramirez.github.io%2fpost%2fcomposing-scala-and-java-futures%2f - Composing%20Scala%20and%20Java%20futures "><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/and-now-we-are-using-hugo/">And now we are using Hugo<aside class="dates">Jul 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/">What are you going to write that is worthy of me? <aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/groovy-scripting/">Groovy scripting<aside class="dates">Oct 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/securing-your-application/">Securing your application<aside class="dates">Aug 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/composing-scala-and-java-futures/">Composing Scala and Java futures<aside class="dates">Apr 28</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/from-cloudfoundry-to-openshift/">From Cloudfoundry to Openshift<aside class="dates">Oct 27</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/">Bajoneando.com and Lolotiquillo 0.1.6 release<aside class="dates">Feb 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/">Migrating from Dojo 1.7 to 2.x<aside class="dates">Feb 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/you-are-only-coming-through-in-waves/">You are only coming through in waves<aside class="dates">Jan 10</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/">Using Mongo and GridFS to store images<aside class="dates">Aug 26</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+    <p class="small">
+    
+        © Copyright 2016 
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://lnramirez.github.iojs/main.js"></script>
+<script src="http://lnramirez.github.iojs/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>

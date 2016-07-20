@@ -1,0 +1,282 @@
+    <!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		<meta name="generator" content="Hugo 0.16" />
+		<title>Using Mongo and GridFS to store images &middot; Bajoneando Blog</title>
+		<link rel="shortcut icon" href="http://lnramirez.github.ioimages/favicon.ico">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/style.css">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://lnramirez.github.io'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://lnramirez.github.ioabout'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Using Mongo and GridFS to store images</h1>
+                    <h2 class="headline">
+                    August 26, 2012 
+                    <br>
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    <p>GridFS is Mongo specification to store files, claims to be better than file system but to me querying files it&rsquo;s what makes it lots better and it&rsquo;s very straight forward.</p>
+
+<p>I am using a POJO to use within the service that performs the operations</p>
+
+<pre><code>public class MongoStoredFile {
+
+    private String id;
+    private File file;
+    private String name;
+    private String contentType;
+    private byte[] data;
+    private InputStream inputStream;
+}
+</code></pre>
+
+<p>The service receives a MongoStoredFile object and saves it</p>
+
+<pre><code>public String save(MongoStoredFile file) throws IOException {
+    GridFS gridFS = new GridFS(mongoTemplate.getDb(),&quot;images&quot;);
+    GridFSInputFile inputFile = gridFS.createFile(file.getData());
+    inputFile.setContentType(file.getContentType());
+    inputFile.setFilename(file.getName());
+    inputFile.save();
+    return inputFile.getId().toString();
+}
+</code></pre>
+
+<p>it&rsquo;s very straight forward</p>
+
+<ul>
+<li>create a GridFS object, receives two arguments a connection and a collections name, in this case &ldquo;images&rdquo;</li>
+<li>create a GridFSInputFile with files binary data</li>
+<li>set the content type</li>
+<li>set a name</li>
+<li>save it</li>
+</ul>
+
+<p>that simple</p>
+
+<p>Now if you want to retrieve the stored object, here the id is being passed as argument, but you can create a query and handle the results.</p>
+
+<pre><code>public MongoStoredFile getFile(String objectId) throws IOException  {
+    GridFS gridFS = new GridFS(mongoTemplate.getDb(),&quot;images&quot;);
+    GridFSDBFile file = gridFS.find(new ObjectId(objectId));
+
+    ...
+}
+</code></pre>
+
+<ul>
+<li>you pass a mongo connection and a collection&rsquo;s name</li>
+<li>execute a query with gridFS.find and you obtain a reference to a GridFSDBFile object</li>
+</ul>
+
+<p>Now you need to extract the values and put them in our POJO MongoStoredFile</p>
+
+<pre><code>public MongoStoredFile getFile(String objectId) throws IOException  {
+    GridFS gridFS = new GridFS(mongoTemplate.getDb(),&quot;images&quot;);
+    GridFSDBFile file = gridFS.find(new ObjectId(objectId));
+
+    ...
+
+    MongoStoredFile mongoStoredFile = new MongoStoredFile();
+    mongoStoredFile.setId(objectId.toString());
+    mongoStoredFile.setName((String) file.get(&quot;filename&quot;));
+    mongoStoredFile.setContentType((String) file.get(&quot;contentType&quot;));
+    mongoStoredFile.setInputStream(file.getInputStream());
+    return mongoStoredFile;
+}
+</code></pre>
+
+<p>that&rsquo;s our service</p>
+
+<p>From the client side we only need to call our service, there&rsquo;s some plumbing to it though</p>
+
+<p>JSP looks like:</p>
+
+<pre><code>&lt;form:form action=&quot;${imagesUpload}&quot; enctype=&quot;multipart/form-data&quot; id=&quot;imageForm&quot; commandName=&quot;mongoStoredFile&quot; name=&quot;imageForm&quot; method=&quot;POST&quot;&gt;
+    &lt;fieldset&gt;
+        &lt;p&gt;
+            &lt;label for=&quot;subject&quot;&gt;File:&lt;/label&gt;
+            &lt;form:input path=&quot;file&quot; type=&quot;file&quot; id=&quot;file&quot; 
+                        placeholder=&quot;File:&quot; required=&quot;required&quot; /&gt;
+        &lt;/p&gt;
+        &lt;p&gt;
+            &lt;input type=&quot;submit&quot; id=&quot;formButton&quot; value=&quot;Upload File&quot; &gt;
+        &lt;/p&gt;
+    &lt;/fieldset&gt;
+&lt;/form:form&gt;
+</code></pre>
+
+<p>and the server counterpart</p>
+
+<pre><code>public void upload(@RequestParam(&quot;file&quot;) MultipartFile multipartFile, final HttpServletResponse response) throws IOException {
+    if (multipartFile == null) {
+        throw new RuntimeException(&quot;file null&quot;);
+    }
+    MongoStoredFile image = new MongoStoredFile();
+    image.setName(multipartFile.getOriginalFilename());
+    image.setContentType(multipartFile.getContentType());
+    image.setData(multipartFile.getBytes());
+    fileService.save(image);
+}
+</code></pre>
+
+<p>The post would not be complete without an example of a file hosted in this casa. I have taken keen interest in this JVM language for the last month. I am seriously contemplating moving my efforts into that direction.</p>
+
+<p><img src="http://lnramirez.github.io/images/download/503a1791c75e2bb846f5d154" alt="Scala" />*</p>
+
+<p>You can see the rest of the code at: <a href="https://github.com/lnramirez/lnramirez">https://github.com/lnramirez/lnramirez</a></p>
+
+<p>*Image taken from: <a href="http://www.scala-lang.org/docu/files/packageobjects/scala-logo.png">http://www.scala-lang.org/docu/files/packageobjects/scala-logo.png</a></p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                
+                        <img class="avatar" src="http://lnramirez.github.ioimages/avatar.png">
+                        <div>
+                            <span class="dark"></span>
+                            <span></span>
+                        </div>
+                    
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2flnramirez.github.io%2fpost%2fusing-mongo-and-grid-fs-to-store-images%2f - Using%20Mongo%20and%20GridFS%20to%20store%20images "><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/and-now-we-are-using-hugo/">And now we are using Hugo<aside class="dates">Jul 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/">What are you going to write that is worthy of me? <aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/groovy-scripting/">Groovy scripting<aside class="dates">Oct 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/securing-your-application/">Securing your application<aside class="dates">Aug 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/composing-scala-and-java-futures/">Composing Scala and Java futures<aside class="dates">Apr 28</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/from-cloudfoundry-to-openshift/">From Cloudfoundry to Openshift<aside class="dates">Oct 27</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/">Bajoneando.com and Lolotiquillo 0.1.6 release<aside class="dates">Feb 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/">Migrating from Dojo 1.7 to 2.x<aside class="dates">Feb 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/you-are-only-coming-through-in-waves/">You are only coming through in waves<aside class="dates">Jan 10</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/">Using Mongo and GridFS to store images<aside class="dates">Aug 26</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+    <p class="small">
+    
+        © Copyright 2016 
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://lnramirez.github.iojs/main.js"></script>
+<script src="http://lnramirez.github.iojs/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>

@@ -1,0 +1,300 @@
+    <!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		<meta name="generator" content="Hugo 0.16" />
+		<title>And now we are using Hugo &middot; Bajoneando Blog</title>
+		<link rel="shortcut icon" href="http://lnramirez.github.ioimages/favicon.ico">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/style.css">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://lnramirez.github.io'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://lnramirez.github.ioabout'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>And now we are using Hugo</h1>
+                    <h2 class="headline">
+                    July 18, 2016 
+                    <br>
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    <p>A quick story on this site is as follow.</p>
+
+<ol>
+<li>Created a simple website using spring, mongo, dojo and hosted in Cloudfoundry</li>
+<li>Moved it to Openshift</li>
+<li>Reimplemented frontend using clojurescript</li>
+<li>Never updated it much</li>
+<li>Some feautures stopped working</li>
+<li>Decided to focus development somewhere else</li>
+<li>Decided to use github pages and Hugo to host the blog</li>
+<li>Here we are</li>
+</ol>
+
+<p>Hugo makes sense to me because all my articles were written in markdown before,
+though there are a couple of things that don&rsquo;t work the same, it shouldn&rsquo;t be that hard.</p>
+
+<p>Now what I needed shouldn&rsquo;t be that difficult either</p>
+
+<ul>
+<li>All the articles where store in a collection <code>blogEntry</code> so I only had to get the data out of mongo</li>
+<li>And map it to a Hugo equivalent. Hugo is pretty simple:
+
+<ul>
+<li>you create a file .md and name of the file becomes url</li>
+<li>file content has a header and what not but mainly you write markdown</li>
+</ul></li>
+<li>Make Hugo generate site content and upload it to github pages</li>
+<li>Finally update my cname record to point to github instead of redhat and tada this (will) should be up and running</li>
+</ul>
+
+<p>So I had to endure a couple of things worth writting about.</p>
+
+<ul>
+<li>How I got the data out of Openshift</li>
+<li>How I generated the content</li>
+</ul>
+
+<p>I found it so difficult to connect from a remote machine to Openshift, I am sure I saw somewhere people doing tunneling
+or something in that direction. But in the end the data was the only thing needed. So I use RockMongo and generated a .js files.</p>
+
+<p>I load it to a local mongo database since it would be easier (or so I thought). Then I have come to an age where
+having to install stuff sounds too much, and since Docker is so hip nowadays and trying to learn new stuff gave it a chance.</p>
+
+<p>Running docker with boot2docker in a Mac always is a pain. So there&rsquo;s a lot of indirection, for example I had to use Docker
+in Virtual Box, once you follow all the guidelines for Mac you always forget how to connect from your local machine to Docker.
+So have handy this cli always.</p>
+
+<pre><code>$ eval $(docker-machine env default)
+</code></pre>
+
+<p>given that default is the name of virtual box machine
+Now trying the line was torture</p>
+
+<pre><code>$ docker run --name database -v /Users/luisrm/prj/per/docker/var/mongodata:/data/db -d mongo
+</code></pre>
+
+<p>It&rsquo;s supposed to run but then when was verifying that it was up and running</p>
+
+<pre><code>$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+</code></pre>
+
+<p>Bamn, nada! Driving me crazy. So more cli you can look at the logs</p>
+
+<pre><code>$ docker logs -f database
+2016-07-18T20:35:46.508+0000 I CONTROL  [initandlisten] MongoDB starting : pid=1 port=27017 dbpath=/data/db 64-bit host=a8faaa94bdc6
+2016-07-18T20:35:46.508+0000 I CONTROL  [initandlisten] db version v3.2.8
+2016-07-18T20:35:46.508+0000 I CONTROL  [initandlisten] git version: ed70e33130c977bda0024c125b56d159573dbaf0
+2016-07-18T20:35:46.508+0000 I CONTROL  [initandlisten] OpenSSL version: OpenSSL 1.0.1e 11 Feb 2013
+2016-07-18T20:35:46.508+0000 I CONTROL  [initandlisten] allocator: tcmalloc
+2016-07-18T20:35:46.508+0000 I CONTROL  [initandlisten] modules: none
+2016-07-18T20:35:46.508+0000 I CONTROL  [initandlisten] build environment:
+2016-07-18T20:35:46.508+0000 I CONTROL  [initandlisten]     distmod: debian71
+2016-07-18T20:35:46.508+0000 I CONTROL  [initandlisten]     distarch: x86_64
+2016-07-18T20:35:46.508+0000 I CONTROL  [initandlisten]     target_arch: x86_64
+2016-07-18T20:35:46.508+0000 I CONTROL  [initandlisten] options: {}
+2016-07-18T20:35:46.529+0000 I STORAGE  [initandlisten] exception in initAndListen: 98 Unable to create/open lock file: /data/db/mongod.lock errno:13 Permission denied Is a mongod instance already running?, terminating
+2016-07-18T20:35:46.529+0000 I CONTROL  [initandlisten] dbexit:  rc: 100
+</code></pre>
+
+<p>now that gave me some shed on what&rsquo;s going on, apparently though it was mounted permissions and what non sense still couldn&rsquo;t acquired the lock.
+Doing some stack overflow research I ended up on github bugs mentioning that mounting directly wouldn&rsquo;t work but you could create a docker volume
+(whatever that means)</p>
+
+<pre><code>$ docker volume create --name mongodbdata
+</code></pre>
+
+<p>and finally you run it with the volume you created and works</p>
+
+<pre><code>$ docker run --name database -v /Users/luisrm/prj/per/docker/var/mongodata:/data/db -d mongo
+ae380df78141
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                      NAMES
+ae380df78141        mongo               &quot;/entrypoint.sh mongo&quot;   4 seconds ago       Up 3 seconds        0.0.0.0:27017-&gt;27017/tcp   database
+</code></pre>
+
+<p>Now you have to remember one thing, this container is not running on your machine, is listening on port 27017 but of the Virtual Box machine</p>
+
+<pre><code>$ mongo localhost:27017
+MongoDB shell version: 3.2.0
+connecting to: localhost:27017/test
+2016-07-20T10:31:23.328-0400 W NETWORK  [thread1] Failed to connect to 127.0.0.1:27017, reason: errno:61 Connection refused
+2016-07-20T10:31:23.328-0400 E QUERY    [thread1] Error: couldn't connect to server localhost:27017, connection attempt failed :
+connect@src/mongo/shell/mongo.js:226:14
+@(connect):1:6
+
+exception: connect failed
+</code></pre>
+
+<p>So in order for you to connect to it you have to forward that port to something else.</p>
+
+<ul>
+<li>On virtual Box, right click the machine (default in my case) and click settings</li>
+<li>Click on network tab</li>
+<li>Click on Port forwarding</li>
+<li>Click on the + icon</li>
+<li>On the row select tcp protocol</li>
+<li>Enter 27017 for Guest Port</li>
+<li>And I chose 1111 for Host Port</li>
+</ul>
+
+<p>then when you try</p>
+
+<pre><code>$ mongo localhost:1111
+MongoDB shell version: 3.2.0
+connecting to: localhost:1111/test
+</code></pre>
+
+<p>Now, off to the races. Now I need to read all the collections, generate the hugo files, upload it to Github and would be done with it. So I thought, Scala, well too easy, let&rsquo;s do it Clojure way
+using Mongoer but let&rsquo;s leave that to for a next post.</p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                
+                        <img class="avatar" src="http://lnramirez.github.ioimages/avatar.png">
+                        <div>
+                            <span class="dark"></span>
+                            <span></span>
+                        </div>
+                    
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2flnramirez.github.io%2fpost%2fand-now-we-are-using-hugo%2f - And%20now%20we%20are%20using%20Hugo "><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/and-now-we-are-using-hugo/">And now we are using Hugo<aside class="dates">Jul 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/">What are you going to write that is worthy of me? <aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/groovy-scripting/">Groovy scripting<aside class="dates">Oct 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/securing-your-application/">Securing your application<aside class="dates">Aug 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/composing-scala-and-java-futures/">Composing Scala and Java futures<aside class="dates">Apr 28</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/from-cloudfoundry-to-openshift/">From Cloudfoundry to Openshift<aside class="dates">Oct 27</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/">Bajoneando.com and Lolotiquillo 0.1.6 release<aside class="dates">Feb 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/">Migrating from Dojo 1.7 to 2.x<aside class="dates">Feb 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/you-are-only-coming-through-in-waves/">You are only coming through in waves<aside class="dates">Jan 10</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/">Using Mongo and GridFS to store images<aside class="dates">Aug 26</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+    <p class="small">
+    
+        © Copyright 2016 
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://lnramirez.github.iojs/main.js"></script>
+<script src="http://lnramirez.github.iojs/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>

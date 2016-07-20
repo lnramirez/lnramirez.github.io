@@ -1,0 +1,271 @@
+    <!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		<meta name="generator" content="Hugo 0.16" />
+		<title>On Map Reduce - Part 2 &middot; Bajoneando Blog</title>
+		<link rel="shortcut icon" href="http://lnramirez.github.ioimages/favicon.ico">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/style.css">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://lnramirez.github.io'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://lnramirez.github.ioabout'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>On Map Reduce - Part 2</h1>
+                    <h2 class="headline">
+                    July 3, 2012 
+                    <br>
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    <p><a href="http://lnramirez.cloudfoundry.com/blog/4fedfebe4a14fb8d9f5e4e07/On%20Map%20Reduce%20-%20Part%201">On Map Reduce - Part 1</a> I introduced the use of a map reduce to retrieve the latest entry on the blog.</p>
+
+<p>The document where we store blog entries looks like</p>
+
+<pre><code>@Document
+public class BlogEntry implements Serializable {
+
+    private String id;
+    private String subject;
+    private String article;
+    private Date publishDate;
+    private Date lastUpdateDate;
+    private String printableHtml;
+    //more code continues
+
+}
+</code></pre>
+
+<p>Spring part as I stated before is pretty straight forward, on my service I added getLastEntry method</p>
+
+<pre><code>@Service
+public class BlogEntryService {
+
+    public BlogEntry getLastEntry() {
+        MapReduceOptions options = new MapReduceOptions();
+        MapReduceResults&lt;MappedBlogEntry&gt; mapReduceResults = mongoTemplate.
+                mapReduce(&quot;blogEntry&quot;, &quot;classpath:mongo/mapallblogs.js&quot; , 
+                &quot;classpath:mongo/reducelatestblog.js&quot;, MappedBlogEntry.class);
+        if (mapReduceResults.iterator().hasNext()) {
+            BlogEntry blogEntry = mapReduceResults.iterator().next().getValue();
+            return blogEntry;
+        } else {
+            throw new RuntimeException(&quot;No entries for blogEntry&quot;);
+        }
+    }
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+}
+</code></pre>
+
+<p>In order to understand it we need to recall what our map and reduce functions looks like</p>
+
+<p>mapallblog.js &gt;</p>
+
+<pre><code>function () {
+    emit(&quot;blogEntry&quot;, this);
+}
+</code></pre>
+
+<p>on mapallblog it&rsquo;s emitting the whole object as it is with all it&rsquo;s properties.</p>
+
+<p>reducelatestblog.js &gt;</p>
+
+<pre><code>function (key, values) {
+    var latest = values[0];
+    for (var i=0;i&lt;values.length;i++) {
+        if (latest.publishDate &lt; values[i].publishDate) {
+            latest = values[i];
+        }
+    }
+    return latest;
+}
+</code></pre>
+
+<p>then on reduce function we just select the one with the oldest publishDate and return it.</p>
+
+<p>But what mongo does behind the scenes is map it and pair it with a reduction, hence the result of this called will be an object</p>
+
+<pre><code>{
+id:&quot;blogEntry&quot;,
+value:emittedObject
+}
+</code></pre>
+
+<p>we can map the result with another object</p>
+
+<pre><code>public class MappedBlogEntry {
+
+    private String  id;
+    private BlogEntry value;
+    //more code continues
+
+}
+</code></pre>
+
+<p>Going back to the actual spring call</p>
+
+<pre><code>        MapReduceResults&lt;MappedBlogEntry&gt; mapReduceResults = mongoTemplate.
+                mapReduce(&quot;blogEntry&quot;, &quot;classpath:mongo/mapallblogs.js&quot; , 
+                &quot;classpath:mongo/reducelatestblog.js&quot;, MappedBlogEntry.class);
+        if (mapReduceResults.iterator().hasNext()) {
+            BlogEntry blogEntry = mapReduceResults.iterator().next().getValue();
+            return blogEntry;
+        } else {
+            throw new RuntimeException(&quot;No entries for blogEntry&quot;);
+        }
+</code></pre>
+
+<p>mongoTemplate.mapReduce fourth parameter is a class to which map the results this case MappedBlogEntry, and that&rsquo;s about it. Every time you access home screen a map reduce function is evaluated.</p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                
+                        <img class="avatar" src="http://lnramirez.github.ioimages/avatar.png">
+                        <div>
+                            <span class="dark"></span>
+                            <span></span>
+                        </div>
+                    
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2flnramirez.github.io%2fpost%2fon-map-reduce-part-2%2f - On%20Map%20Reduce%20-%20Part%202 "><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/and-now-we-are-using-hugo/">And now we are using Hugo<aside class="dates">Jul 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/">What are you going to write that is worthy of me? <aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/groovy-scripting/">Groovy scripting<aside class="dates">Oct 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/securing-your-application/">Securing your application<aside class="dates">Aug 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/composing-scala-and-java-futures/">Composing Scala and Java futures<aside class="dates">Apr 28</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/from-cloudfoundry-to-openshift/">From Cloudfoundry to Openshift<aside class="dates">Oct 27</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/">Bajoneando.com and Lolotiquillo 0.1.6 release<aside class="dates">Feb 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/">Migrating from Dojo 1.7 to 2.x<aside class="dates">Feb 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/you-are-only-coming-through-in-waves/">You are only coming through in waves<aside class="dates">Jan 10</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/">Using Mongo and GridFS to store images<aside class="dates">Aug 26</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+    <p class="small">
+    
+        © Copyright 2016 
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://lnramirez.github.iojs/main.js"></script>
+<script src="http://lnramirez.github.iojs/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>

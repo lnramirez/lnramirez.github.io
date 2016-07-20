@@ -1,0 +1,229 @@
+    <!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		<meta name="generator" content="Hugo 0.16" />
+		<title>Securing your application &middot; Bajoneando Blog</title>
+		<link rel="shortcut icon" href="http://lnramirez.github.ioimages/favicon.ico">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/style.css">
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://lnramirez.github.iocss/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://lnramirez.github.io'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://lnramirez.github.ioabout'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Securing your application</h1>
+                    <h2 class="headline">
+                    August 8, 2014 
+                    <br>
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    <p>Back in june I access bajoneando only to find that I had a new entry on my blog, which I didn&rsquo;t remember doing it. When I checked the data it was empty, just had the date 6/2/2014. It occurred to me that somebody might have checked my password at github (it was hardcoded) and tried to add something. So I removed it and continue with my life. After a while it happened again. And well it just happened yesterday. <em>Sigh</em></p>
+
+<p>I decided I should invest some time in really finding out what the problem was.</p>
+
+<p>Well, it just so happened that I didn&rsquo;t secure methods, I had some security in order to prevent users from navigating to some pages but, alas, I forgot to secure POST, PUT, DELETE methods I didn&rsquo;t want to be accessed.</p>
+
+<p>This is a snippet of my spring security before today&rsquo;s change</p>
+
+<pre><code>&lt;global-method-security pre-post-annotations=&quot;enabled&quot;/&gt;
+
+&lt;http auto-config=&quot;true&quot; use-expressions=&quot;true&quot;&gt;
+    &lt;intercept-url pattern=&quot;/images/download/**&quot; access=&quot;permitAll&quot; /&gt;
+    &lt;intercept-url pattern=&quot;/images/**&quot; access=&quot;hasRole('ROLE_ADMIN')&quot; /&gt;
+    &lt;intercept-url pattern=&quot;/resources/**&quot; access=&quot;permitAll&quot; /&gt;
+    &lt;logout logout-success-url=&quot;/&quot; /&gt;
+&lt;/http&gt;
+</code></pre>
+
+<p>basically I thought I didn&rsquo;t want people uploading images since anyone could do it. Users could go almost anywhere but based on their roles they would not be able to add a new entry. At the http level everything was opened.</p>
+
+<p>For example, the method to add a new post is:</p>
+
+<pre><code>@RequestMapping(method=RequestMethod.POST)
+public String addEntry(@ModelAttribute(value=&quot;blogEntry&quot; value=&quot;/blog&quot;) BlogEntry blogEntry) 
+</code></pre>
+
+<p>so basically you could use postman app and generate a post to <a href="http://www.bajoneando.com/blog/">http://www.bajoneando.com/blog/</a> url and insert a new record, which I think is what was going on. More likely a web crawler doing it. I tried it and boom! I added a new record just like the ones I&rsquo;ve been deleting lately.</p>
+
+<p>In order to secure those methods I updated my spring security as so:</p>
+
+<pre><code>&lt;http auto-config=&quot;true&quot; use-expressions=&quot;true&quot;&gt;
+    &lt;intercept-url pattern=&quot;/visit/add/**&quot; method=&quot;POST&quot; access=&quot;permitAll&quot; /&gt;
+    &lt;intercept-url pattern=&quot;/**&quot; method=&quot;POST&quot; access=&quot;hasRole('ROLE_ADMIN')&quot; /&gt;
+    &lt;intercept-url pattern=&quot;/**&quot; method=&quot;PUT&quot; access=&quot;hasRole('ROLE_ADMIN')&quot; /&gt;
+    &lt;intercept-url pattern=&quot;/**&quot; method=&quot;DELETE&quot; access=&quot;hasRole('ROLE_ADMIN')&quot; /&gt;
+    &lt;intercept-url pattern=&quot;/images/download/**&quot; access=&quot;permitAll&quot; /&gt;
+    &lt;intercept-url pattern=&quot;/images/**&quot; access=&quot;hasRole('ROLE_ADMIN')&quot; /&gt;
+    &lt;intercept-url pattern=&quot;/resources/**&quot; access=&quot;permitAll&quot; /&gt;
+    &lt;logout logout-success-url=&quot;/&quot; /&gt;
+&lt;/http&gt;
+</code></pre>
+
+<p>Most of my post, put, delete methods you need to have ROLE_ADMIN, except for add a new visit (which I&rsquo;ve been tracking) for any user accessing the site through a browser with javascript enabled. Works like a charm. I expect no more ghosts posts in bajoneando.</p>
+
+<p>By the way, while securing my app, I found out that url patterns are sensitive to order, which now that I think so, makes sense. For example I had before:</p>
+
+<pre><code>    &lt;intercept-url pattern=&quot;/**&quot; method=&quot;POST&quot; access=&quot;hasRole('ROLE_ADMIN')&quot; /&gt;
+    &lt;intercept-url pattern=&quot;/visit/add/**&quot; method=&quot;POST&quot; access=&quot;permitAll&quot; /&gt;
+</code></pre>
+
+<p>Any where you go in the app posts a new visit add, but with this configuration it would deny me access. So I switch  to:</p>
+
+<pre><code>    &lt;intercept-url pattern=&quot;/visit/add/**&quot; method=&quot;POST&quot; access=&quot;permitAll&quot; /&gt;
+    &lt;intercept-url pattern=&quot;/**&quot; method=&quot;POST&quot; access=&quot;hasRole('ROLE_ADMIN')&quot; /&gt;
+</code></pre>
+
+<p>and works fine. One thing I don&rsquo;t like of my current security is that for some reason instead of responding with a 403 http status, responds with a 200 and sends the login html screen as response. Let&rsquo;s see if I want to be so polite with my crawler and let it know it can access those methods. But I don&rsquo;t think so.</p>
+
+<p>p.s. I think dojo is so 2009, cool kids nowadays use angular, ember or the likes. I have my intentions behind learning react and clojurescript :) that would be awesome. Let&rsquo;s see if it can see the light some day.</p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                
+                        <img class="avatar" src="http://lnramirez.github.ioimages/avatar.png">
+                        <div>
+                            <span class="dark"></span>
+                            <span></span>
+                        </div>
+                    
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2flnramirez.github.io%2fpost%2fsecuring-your-application%2f - Securing%20your%20application "><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/and-now-we-are-using-hugo/">And now we are using Hugo<aside class="dates">Jul 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/">What are you going to write that is worthy of me? <aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/groovy-scripting/">Groovy scripting<aside class="dates">Oct 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/securing-your-application/">Securing your application<aside class="dates">Aug 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/composing-scala-and-java-futures/">Composing Scala and Java futures<aside class="dates">Apr 28</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/from-cloudfoundry-to-openshift/">From Cloudfoundry to Openshift<aside class="dates">Oct 27</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/">Bajoneando.com and Lolotiquillo 0.1.6 release<aside class="dates">Feb 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/">Migrating from Dojo 1.7 to 2.x<aside class="dates">Feb 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/you-are-only-coming-through-in-waves/">You are only coming through in waves<aside class="dates">Jan 10</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://lnramirez.github.io/post/using-mongo-and-grid-fs-to-store-images/">Using Mongo and GridFS to store images<aside class="dates">Aug 26</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+    <p class="small">
+    
+        © Copyright 2016 
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://lnramirez.github.iojs/main.js"></script>
+<script src="http://lnramirez.github.iojs/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>
