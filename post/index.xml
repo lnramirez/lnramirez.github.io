@@ -5,8 +5,131 @@
     <link>https://lnramirez.github.io/post/</link>
     <description>Recent content in Posts on Bajoneando Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 18 Jul 2016 17:28:12 -0400</lastBuildDate>
+    <lastBuildDate>Fri, 05 Aug 2016 15:50:18 -0400</lastBuildDate>
     <atom:link href="https://lnramirez.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>On using Hugo and Monger</title>
+      <link>https://lnramirez.github.io/post/on-using-hugo-and-monger/</link>
+      <pubDate>Fri, 05 Aug 2016 15:50:18 -0400</pubDate>
+      
+      <guid>https://lnramirez.github.io/post/on-using-hugo-and-monger/</guid>
+      <description>&lt;p&gt;The web app was hostend on Openshift before, my data in mongo. I used RockMongo to get a dump of my data. It was a nice .gz file that as luck will have it, I need to read at least five sites before I actually know how to extract it. Yup, if my life depended on my abilities to extract files I&amp;rsquo;d be in the strees by now. With the file handy and have done all the running mongo in docker I needed to upload the actual data.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ mongo localhost:1111
+MongoDB shell version: 3.2.0
+connecting to: localhost:1111/test
+&amp;gt; use anotherdb
+switched to db anotherdb
+&amp;gt; load(&#39;mongo-lnramirez-20160718-172713.js&#39;)
+true
+&amp;gt; show collections
+blogEntry
+images.chunks
+images.files
+visit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So there I was decided to use Hugo for my blog, all collections uploaded to my local mongo db and all it was required was reading mongo and generate a mongo equivalent.&lt;/p&gt;
+
+&lt;p&gt;Mongo is a non-structured repository meaning structures are not rigid but they all are json. My json objects didn&amp;rsquo;t change that much over time.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt; db.blogEntry.find({subject: &amp;quot;Iteration Guaymango release notes&amp;quot;})
+{ &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;4fc81041be6c1e4069b1046a&amp;quot;), &amp;quot;_class&amp;quot; : &amp;quot;com.bajoneando.lnramirez.blog.BlogEntry&amp;quot;, &amp;quot;subject&amp;quot; : &amp;quot;Iteration Guaymango release notes&amp;quot;, &amp;quot;article&amp;quot; : &amp;quot;Iteration Guaymango Rulz!\n\noh boy! I cannot believe how much work I did this iteration. \n\n### New features\n\n#### Google code prettify\n\nWe added css to our code, thanks to markdown awesome html sintax now something like: \n\n    @RequestMapping(value=\&amp;quot;/update\&amp;quot;, method=RequestMethod.PUT, headers=\&amp;quot;Accept=application/json\&amp;quot;)\n    @ResponseStatus(HttpStatus.OK)\n    public void updateEntry(@RequestBody BlogEntry blogEntry) {\n        blogEntry.setLastUpdateDate(new Date());\n        blogEntry.setPrintableHtml(markdownProcessor.markdown(blogEntry.getArticle()));\n        blogEntryRepository.save(blogEntry);\n    }\n\nis possible\n \n#### Sitemesh 2 templating\n\nProbably this ain&#39;t that cool to the bare eye, nonetheless is so good for developers. Before all pages had embedded css and boiler html code to look alike. Now every thing goes so smooth.\n\n*About* page has only this code\n\n    &amp;lt;html lang=\&amp;quot;en\&amp;quot;&amp;gt;\n        &amp;lt;head&amp;gt;\n            &amp;lt;title&amp;gt;About&amp;lt;/title&amp;gt;\n        &amp;lt;/head&amp;gt;\n        &amp;lt;body&amp;gt;\n            &amp;lt;header&amp;gt;\n                &amp;lt;h2&amp;gt;Bajoneando&amp;lt;/h2&amp;gt;\n            &amp;lt;/header&amp;gt;\n            &amp;lt;article&amp;gt;\n                &amp;lt;strong&amp;gt;Bajoneando meaning&amp;lt;/strong&amp;gt;\n                &amp;lt;p&amp;gt;\n                    Bajonear is a salvadorean-spanish verb that you use to refer\n                    to the action of eating after hours, probably after a party or \n                    a long day at work. \n                    You can use it when you are famished and heading towards to\n                    grab a bite, something like &amp;lt;em&amp;gt;I am going to bajonear&amp;lt;/em&amp;gt;&amp;lt;/p&amp;gt;\n                &amp;lt;p&amp;gt;\n                    I am Bajoneando as you can see in the footer because I usually \n                    program at work only but nowadays I have been feeling like \n                    programming after hours with a cup of joe, nuts, dried fruit \n                    or any paleo snack that I can eat\n                &amp;lt;/p&amp;gt;\n            &amp;lt;/article&amp;gt;\n        &amp;lt;/body&amp;gt;\n    &amp;lt;/html&amp;gt;\n\nyet produces a beautiful page go to  [About page](http://lnramirez.cloudfoundry.com/about/ \&amp;quot;About page\&amp;quot;) and see it for yourself.\n\n#### Article editor\n\nWell not everybody is supposed to add, edit article but I have left it as is, like I said in the beginning _please don&#39;t be mean =)_ anyhow, we can add, update an entry and see a preview immediatly, no refresh =D thanks to the awesome dojo toolkit.\n\n#### Pagination\n\nYup pagination was added as well, nothing too fancy just a previous and later entries links, I am hopping to write lots more entries everynow and then.  Right now we have 5 entries per page, sorted **DESC** on published Date\n\n#### HTML5\n\nI know, I know, I should not brag about it but my site is HTML5 complaint or at least I check up my generated html at [Markup Validation Service](http://validator.w3.org/ \&amp;quot;Markup Validation Service\&amp;quot;) &amp;quot;, &amp;quot;publishDate&amp;quot; : ISODate(&amp;quot;2012-06-01T00:00:00Z&amp;quot;), &amp;quot;lastUpdateDate&amp;quot; : ISODate(&amp;quot;2012-06-04T13:24:20.582Z&amp;quot;)}&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So as I have explained before I was storing already markdown-ish and Hugo format is very simple too, you create a file with an iphenized name to be more url friendly, in the file, at top date, title and some other options&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;+++
+date = &amp;quot;2016-08-05T15:50:18-04:00&amp;quot;
+draft = true
+title = &amp;quot;on using hugo and monger&amp;quot;
+
++++
+
+I use RockMongo to get a dump of my mongo data. It was a nice .gz file that as usual I need to read at least five sites before I act
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and yes, this is actually recursive ;)&lt;/p&gt;
+
+&lt;p&gt;my go to place to look what library should I by using to this or that is &lt;a href=&#34;http://clojurewerkz.org/&#34;&gt;http://clojurewerkz.org/&lt;/a&gt; looking up on how to connect to mongo seems like Monger is your best option &lt;a href=&#34;http://clojuremongodb.info/&#34;&gt;http://clojuremongodb.info/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I use leinegen project, adding dependencies to monger&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  :dependencies [[org.clojure/clojure &amp;quot;1.8.0&amp;quot;]
+                 [com.novemberain/monger &amp;quot;3.0.2&amp;quot;]
+                 [selmer &amp;quot;1.0.7&amp;quot;]
+                 [clj-time &amp;quot;0.12.0&amp;quot;]]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Importing&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  (:require [monger.core :as mg]
+            [monger.collection :as mc]
+            [selmer.parser :refer [render-file]]
+            [clj-time.format :as f]
+            [clj-time.coerce :as c]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;All the action needes is get all the blog entries and write them as md what Hugo expects&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(defn gen-files
+  []
+  (map #(write-md %) (all-blog-entries)))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Mongo magic happens pretty quick, please don&amp;rsquo;t blink&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(defn all-blog-entries
+  []
+  ;; connect with authentication
+  (let [conn (mg/connect {:port 1111})
+        db (mg/get-db conn &amp;quot;test&amp;quot;)
+        coll &amp;quot;blogEntry&amp;quot;]
+    (mc/find-maps db coll {})))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Rest is writting the file Hugo expects, and I wanted to pause here because I was going to use a template generator, again per clojurewerkz I chose selmer but something funky happened because of the characters were generating garbage so I had to rely on good all concatenating, not my brightest moment I know&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(defn hyphenize
+  [s]
+  (-&amp;gt;
+      (replace s #&amp;quot;(::|\?|\.|-)&amp;quot; &amp;quot;&amp;quot;)
+      (replace #&amp;quot;([A-Z]+)([A-Z][a-z])&amp;quot; &amp;quot;$1-$2&amp;quot;)
+      (replace #&amp;quot;([a-z\d])([A-Z])&amp;quot; &amp;quot;$1-$2&amp;quot;)
+      (replace #&amp;quot;\s+&amp;quot; &amp;quot;-&amp;quot;)
+      (replace #&amp;quot;[áa]&amp;quot; &amp;quot;a&amp;quot;)
+      (replace #&amp;quot;[ée]&amp;quot; &amp;quot;e&amp;quot;)
+      (replace #&amp;quot;[íi]&amp;quot; &amp;quot;i&amp;quot;)
+      (replace #&amp;quot;[óo]&amp;quot; &amp;quot;o&amp;quot;)
+      (replace #&amp;quot;[úu]&amp;quot; &amp;quot;u&amp;quot;)
+      (replace #&amp;quot;_&amp;quot; &amp;quot;-&amp;quot;)
+      (lower-case)))
+
+(defn extract-date
+  [d]
+  (f/unparse (:date-hour-minute-second f/formatters) (c/from-date d)))
+
+(defn gen-hugo
+  [subject pub-date text]
+  (str &amp;quot;+++\ndate = \&amp;quot;&amp;quot; pub-date &amp;quot;\&amp;quot;\ndraft = \&amp;quot;true\&amp;quot;\ntitle = \&amp;quot;&amp;quot;subject&amp;quot;\&amp;quot;\n+++\n&amp;quot; text))
+
+(defn write-md
+  [entry]
+  (let [subject (:subject entry)
+        file-name (hyphenize subject)
+        text (:article entry)
+        pub-date (extract-date (:publishDate entry))]
+    (spit (str file-name &amp;quot;.md&amp;quot;) (gen-hugo subject pub-date text))))
+
+(defn gen-files
+  []
+  (map #(write-md %) (all-blog-entries)))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With that, all my files were generated, named correctly (for the most part) and didn&amp;rsquo;t have to do anything else. So here we are starting another chapter.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>And now we are using Hugo</title>
@@ -1061,84 +1184,6 @@ value:emittedObject
 &lt;p&gt;Although the only new feauture is login/logout functionality and securing edit and add blog entries I think it was worthy doing it, and since at least as of today deploying new version doesn&amp;rsquo;t mean spend more money, why not?&lt;/p&gt;
 
 &lt;p&gt;Hopefully I will have done few thing here and there by the end of the week and recap Huizúcar iteration. Until then.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Iteration Guaymango release notes</title>
-      <link>https://lnramirez.github.io/post/iteration-guaymango-release-notes/</link>
-      <pubDate>Fri, 01 Jun 2012 00:00:00 +0000</pubDate>
-      
-      <guid>https://lnramirez.github.io/post/iteration-guaymango-release-notes/</guid>
-      <description>
-
-&lt;p&gt;Iteration Guaymango Rulz!&lt;/p&gt;
-
-&lt;p&gt;oh boy! I cannot believe how much work I did this iteration.&lt;/p&gt;
-
-&lt;h3 id=&#34;new-features&#34;&gt;New features&lt;/h3&gt;
-
-&lt;h4 id=&#34;google-code-prettify&#34;&gt;Google code prettify&lt;/h4&gt;
-
-&lt;p&gt;We added css to our code, thanks to markdown awesome html sintax now something like:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;@RequestMapping(value=&amp;quot;/update&amp;quot;, method=RequestMethod.PUT, headers=&amp;quot;Accept=application/json&amp;quot;)
-@ResponseStatus(HttpStatus.OK)
-public void updateEntry(@RequestBody BlogEntry blogEntry) {
-    blogEntry.setLastUpdateDate(new Date());
-    blogEntry.setPrintableHtml(markdownProcessor.markdown(blogEntry.getArticle()));
-    blogEntryRepository.save(blogEntry);
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;is possible&lt;/p&gt;
-
-&lt;h4 id=&#34;sitemesh-2-templating&#34;&gt;Sitemesh 2 templating&lt;/h4&gt;
-
-&lt;p&gt;Probably this ain&amp;rsquo;t that cool to the bare eye, nonetheless is so good for developers. Before all pages had embedded css and boiler html code to look alike. Now every thing goes so smooth.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;About&lt;/em&gt; page has only this code&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;html lang=&amp;quot;en&amp;quot;&amp;gt;
-    &amp;lt;head&amp;gt;
-        &amp;lt;title&amp;gt;About&amp;lt;/title&amp;gt;
-    &amp;lt;/head&amp;gt;
-    &amp;lt;body&amp;gt;
-        &amp;lt;header&amp;gt;
-            &amp;lt;h2&amp;gt;Bajoneando&amp;lt;/h2&amp;gt;
-        &amp;lt;/header&amp;gt;
-        &amp;lt;article&amp;gt;
-            &amp;lt;strong&amp;gt;Bajoneando meaning&amp;lt;/strong&amp;gt;
-            &amp;lt;p&amp;gt;
-                Bajonear is a salvadorean-spanish verb that you use to refer
-                to the action of eating after hours, probably after a party or 
-                a long day at work. 
-                You can use it when you are famished and heading towards to
-                grab a bite, something like &amp;lt;em&amp;gt;I am going to bajonear&amp;lt;/em&amp;gt;&amp;lt;/p&amp;gt;
-            &amp;lt;p&amp;gt;
-                I am Bajoneando as you can see in the footer because I usually 
-                program at work only but nowadays I have been feeling like 
-                programming after hours with a cup of joe, nuts, dried fruit 
-                or any paleo snack that I can eat
-            &amp;lt;/p&amp;gt;
-        &amp;lt;/article&amp;gt;
-    &amp;lt;/body&amp;gt;
-&amp;lt;/html&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;yet produces a beautiful page go to  &lt;a href=&#34;http://lnramirez.cloudfoundry.com/about/&#34; title=&#34;About page&#34;&gt;About page&lt;/a&gt; and see it for yourself.&lt;/p&gt;
-
-&lt;h4 id=&#34;article-editor&#34;&gt;Article editor&lt;/h4&gt;
-
-&lt;p&gt;Well not everybody is supposed to add, edit article but I have left it as is, like I said in the beginning &lt;em&gt;please don&amp;rsquo;t be mean =)&lt;/em&gt; anyhow, we can add, update an entry and see a preview immediatly, no refresh =D thanks to the awesome dojo toolkit.&lt;/p&gt;
-
-&lt;h4 id=&#34;pagination&#34;&gt;Pagination&lt;/h4&gt;
-
-&lt;p&gt;Yup pagination was added as well, nothing too fancy just a previous and later entries links, I am hopping to write lots more entries everynow and then.  Right now we have 5 entries per page, sorted &lt;strong&gt;DESC&lt;/strong&gt; on published Date&lt;/p&gt;
-
-&lt;h4 id=&#34;html5&#34;&gt;HTML5&lt;/h4&gt;
-
-&lt;p&gt;I know, I know, I should not brag about it but my site is HTML5 complaint or at least I check up my generated html at &lt;a href=&#34;http://validator.w3.org/&#34; title=&#34;Markup Validation Service&#34;&gt;Markup Validation Service&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

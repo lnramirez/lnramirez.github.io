@@ -1,0 +1,312 @@
+    <!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Luis Ramirez Monterosa">
+		<meta name="description" content="Bajoneando Blog">
+		<meta name="generator" content="Hugo 0.16" />
+		<title>On using Hugo and Monger &middot; Bajoneando Blog</title>
+		<link rel="shortcut icon" href="https://lnramirez.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://lnramirez.github.io/css/style.css">
+		<link rel="stylesheet" href="https://lnramirez.github.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="https://lnramirez.github.io/css/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://lnramirez.github.io/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='https://lnramirez.github.io/about'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>On using Hugo and Monger</h1>
+                    <h2 class="headline">
+                    August 5, 2016 
+                    <br>
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    <p>The web app was hostend on Openshift before, my data in mongo. I used RockMongo to get a dump of my data. It was a nice .gz file that as luck will have it, I need to read at least five sites before I actually know how to extract it. Yup, if my life depended on my abilities to extract files I&rsquo;d be in the strees by now. With the file handy and have done all the running mongo in docker I needed to upload the actual data.</p>
+
+<pre><code>$ mongo localhost:1111
+MongoDB shell version: 3.2.0
+connecting to: localhost:1111/test
+&gt; use anotherdb
+switched to db anotherdb
+&gt; load('mongo-lnramirez-20160718-172713.js')
+true
+&gt; show collections
+blogEntry
+images.chunks
+images.files
+visit
+</code></pre>
+
+<p>So there I was decided to use Hugo for my blog, all collections uploaded to my local mongo db and all it was required was reading mongo and generate a mongo equivalent.</p>
+
+<p>Mongo is a non-structured repository meaning structures are not rigid but they all are json. My json objects didn&rsquo;t change that much over time.</p>
+
+<pre><code>&gt; db.blogEntry.find({subject: &quot;Iteration Guaymango release notes&quot;})
+{ &quot;_id&quot; : ObjectId(&quot;4fc81041be6c1e4069b1046a&quot;), &quot;_class&quot; : &quot;com.bajoneando.lnramirez.blog.BlogEntry&quot;, &quot;subject&quot; : &quot;Iteration Guaymango release notes&quot;, &quot;article&quot; : &quot;Iteration Guaymango Rulz!\n\noh boy! I cannot believe how much work I did this iteration. \n\n### New features\n\n#### Google code prettify\n\nWe added css to our code, thanks to markdown awesome html sintax now something like: \n\n    @RequestMapping(value=\&quot;/update\&quot;, method=RequestMethod.PUT, headers=\&quot;Accept=application/json\&quot;)\n    @ResponseStatus(HttpStatus.OK)\n    public void updateEntry(@RequestBody BlogEntry blogEntry) {\n        blogEntry.setLastUpdateDate(new Date());\n        blogEntry.setPrintableHtml(markdownProcessor.markdown(blogEntry.getArticle()));\n        blogEntryRepository.save(blogEntry);\n    }\n\nis possible\n \n#### Sitemesh 2 templating\n\nProbably this ain't that cool to the bare eye, nonetheless is so good for developers. Before all pages had embedded css and boiler html code to look alike. Now every thing goes so smooth.\n\n*About* page has only this code\n\n    &lt;html lang=\&quot;en\&quot;&gt;\n        &lt;head&gt;\n            &lt;title&gt;About&lt;/title&gt;\n        &lt;/head&gt;\n        &lt;body&gt;\n            &lt;header&gt;\n                &lt;h2&gt;Bajoneando&lt;/h2&gt;\n            &lt;/header&gt;\n            &lt;article&gt;\n                &lt;strong&gt;Bajoneando meaning&lt;/strong&gt;\n                &lt;p&gt;\n                    Bajonear is a salvadorean-spanish verb that you use to refer\n                    to the action of eating after hours, probably after a party or \n                    a long day at work. \n                    You can use it when you are famished and heading towards to\n                    grab a bite, something like &lt;em&gt;I am going to bajonear&lt;/em&gt;&lt;/p&gt;\n                &lt;p&gt;\n                    I am Bajoneando as you can see in the footer because I usually \n                    program at work only but nowadays I have been feeling like \n                    programming after hours with a cup of joe, nuts, dried fruit \n                    or any paleo snack that I can eat\n                &lt;/p&gt;\n            &lt;/article&gt;\n        &lt;/body&gt;\n    &lt;/html&gt;\n\nyet produces a beautiful page go to  [About page](http://lnramirez.cloudfoundry.com/about/ \&quot;About page\&quot;) and see it for yourself.\n\n#### Article editor\n\nWell not everybody is supposed to add, edit article but I have left it as is, like I said in the beginning _please don't be mean =)_ anyhow, we can add, update an entry and see a preview immediatly, no refresh =D thanks to the awesome dojo toolkit.\n\n#### Pagination\n\nYup pagination was added as well, nothing too fancy just a previous and later entries links, I am hopping to write lots more entries everynow and then.  Right now we have 5 entries per page, sorted **DESC** on published Date\n\n#### HTML5\n\nI know, I know, I should not brag about it but my site is HTML5 complaint or at least I check up my generated html at [Markup Validation Service](http://validator.w3.org/ \&quot;Markup Validation Service\&quot;) &quot;, &quot;publishDate&quot; : ISODate(&quot;2012-06-01T00:00:00Z&quot;), &quot;lastUpdateDate&quot; : ISODate(&quot;2012-06-04T13:24:20.582Z&quot;)}&quot;
+</code></pre>
+
+<p>So as I have explained before I was storing already markdown-ish and Hugo format is very simple too, you create a file with an iphenized name to be more url friendly, in the file, at top date, title and some other options</p>
+
+<pre><code>+++
+date = &quot;2016-08-05T15:50:18-04:00&quot;
+draft = true
+title = &quot;on using hugo and monger&quot;
+
++++
+
+I use RockMongo to get a dump of my mongo data. It was a nice .gz file that as usual I need to read at least five sites before I act
+</code></pre>
+
+<p>and yes, this is actually recursive ;)</p>
+
+<p>my go to place to look what library should I by using to this or that is <a href="http://clojurewerkz.org/">http://clojurewerkz.org/</a> looking up on how to connect to mongo seems like Monger is your best option <a href="http://clojuremongodb.info/">http://clojuremongodb.info/</a></p>
+
+<p>I use leinegen project, adding dependencies to monger</p>
+
+<pre><code>  :dependencies [[org.clojure/clojure &quot;1.8.0&quot;]
+                 [com.novemberain/monger &quot;3.0.2&quot;]
+                 [selmer &quot;1.0.7&quot;]
+                 [clj-time &quot;0.12.0&quot;]]
+</code></pre>
+
+<p>Importing</p>
+
+<pre><code>  (:require [monger.core :as mg]
+            [monger.collection :as mc]
+            [selmer.parser :refer [render-file]]
+            [clj-time.format :as f]
+            [clj-time.coerce :as c]
+</code></pre>
+
+<p>All the action needes is get all the blog entries and write them as md what Hugo expects</p>
+
+<pre><code>(defn gen-files
+  []
+  (map #(write-md %) (all-blog-entries)))
+</code></pre>
+
+<p>Mongo magic happens pretty quick, please don&rsquo;t blink</p>
+
+<pre><code>(defn all-blog-entries
+  []
+  ;; connect with authentication
+  (let [conn (mg/connect {:port 1111})
+        db (mg/get-db conn &quot;test&quot;)
+        coll &quot;blogEntry&quot;]
+    (mc/find-maps db coll {})))
+</code></pre>
+
+<p>Rest is writting the file Hugo expects, and I wanted to pause here because I was going to use a template generator, again per clojurewerkz I chose selmer but something funky happened because of the characters were generating garbage so I had to rely on good all concatenating, not my brightest moment I know</p>
+
+<pre><code>(defn hyphenize
+  [s]
+  (-&gt;
+      (replace s #&quot;(::|\?|\.|-)&quot; &quot;&quot;)
+      (replace #&quot;([A-Z]+)([A-Z][a-z])&quot; &quot;$1-$2&quot;)
+      (replace #&quot;([a-z\d])([A-Z])&quot; &quot;$1-$2&quot;)
+      (replace #&quot;\s+&quot; &quot;-&quot;)
+      (replace #&quot;[áa]&quot; &quot;a&quot;)
+      (replace #&quot;[ée]&quot; &quot;e&quot;)
+      (replace #&quot;[íi]&quot; &quot;i&quot;)
+      (replace #&quot;[óo]&quot; &quot;o&quot;)
+      (replace #&quot;[úu]&quot; &quot;u&quot;)
+      (replace #&quot;_&quot; &quot;-&quot;)
+      (lower-case)))
+
+(defn extract-date
+  [d]
+  (f/unparse (:date-hour-minute-second f/formatters) (c/from-date d)))
+
+(defn gen-hugo
+  [subject pub-date text]
+  (str &quot;+++\ndate = \&quot;&quot; pub-date &quot;\&quot;\ndraft = \&quot;true\&quot;\ntitle = \&quot;&quot;subject&quot;\&quot;\n+++\n&quot; text))
+
+(defn write-md
+  [entry]
+  (let [subject (:subject entry)
+        file-name (hyphenize subject)
+        text (:article entry)
+        pub-date (extract-date (:publishDate entry))]
+    (spit (str file-name &quot;.md&quot;) (gen-hugo subject pub-date text))))
+
+(defn gen-files
+  []
+  (map #(write-md %) (all-blog-entries)))
+</code></pre>
+
+<p>With that, all my files were generated, named correctly (for the most part) and didn&rsquo;t have to do anything else. So here we are starting another chapter.</p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                <a href="https://twitter.com/luisnramirez">
+                        <img class="avatar" src="https://lnramirez.github.io/images/avatar.png">
+                        <div>
+                            <span class="dark">Luis Ramirez Monterosa</span>
+                            <span></span>
+                        </div>
+                    </a>
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2flnramirez.github.io%2fpost%2fon-using-hugo-and-monger%2f - On%20using%20Hugo%20and%20Monger by @luisnramirez"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="https://lnramirez.github.io/post/on-using-hugo-and-monger/">On using Hugo and Monger<aside class="dates">Aug 5</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://lnramirez.github.io/post/and-now-we-are-using-hugo/">And now we are using Hugo<aside class="dates">Jul 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://lnramirez.github.io/post/what-are-you-going-to-write-that-is-worthy-of-me-/">What are you going to write that is worthy of me? <aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://lnramirez.github.io/post/groovy-scripting/">Groovy scripting<aside class="dates">Oct 26</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://lnramirez.github.io/post/securing-your-application/">Securing your application<aside class="dates">Aug 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://lnramirez.github.io/post/composing-scala-and-java-futures/">Composing Scala and Java futures<aside class="dates">Apr 28</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://lnramirez.github.io/post/from-cloudfoundry-to-openshift/">From Cloudfoundry to Openshift<aside class="dates">Oct 27</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://lnramirez.github.io/post/bajoneandocom-and-lolotiquillo-016-release/">Bajoneando.com and Lolotiquillo 0.1.6 release<aside class="dates">Feb 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://lnramirez.github.io/post/migrating-from-dojo-17-to-2x/">Migrating from Dojo 1.7 to 2.x<aside class="dates">Feb 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://lnramirez.github.io/post/you-are-only-coming-through-in-waves/">You are only coming through in waves<aside class="dates">Jan 10</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    
+    <a class="symbol" href="https://github.com/lnramirez">
+        github
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/luisnramirez">
+        twitterbird
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2016 Luis Ramirez Monterosa
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://lnramirez.github.io/js/main.js"></script>
+<script src="https://lnramirez.github.io/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-81286834-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+    </body>
+</html>
