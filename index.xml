@@ -132,6 +132,23 @@ I use RockMongo to get a dump of my mongo data. It was a nice .gz file that as u
     </item>
     
     <item>
+      <title>About</title>
+      <link>https://lnramirez.github.io/about/</link>
+      <pubDate>Mon, 18 Jul 2016 17:28:12 -0400</pubDate>
+      
+      <guid>https://lnramirez.github.io/about/</guid>
+      <description>&lt;p&gt;Bajonear is a salvadorean-spanish verb that you use to refer
+                    to the action of eating after hours, probably after a party or
+                    a long day at work.
+                    You can use it when you are famished and heading towards to
+                    grab a bite, something like &lt;em&gt;I am going to bajonear&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;I am Bajoneando because I code for a living but after dark I code for fun in Scala/Clojure/Haskell while I&amp;rsquo;m
+&lt;em&gt;Bajoneando&lt;/em&gt; with a cup of joe, nuts or dried fruit.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>And now we are using Hugo</title>
       <link>https://lnramirez.github.io/post/and-now-we-are-using-hugo/</link>
       <pubDate>Mon, 18 Jul 2016 17:28:12 -0400</pubDate>
@@ -1170,20 +1187,6 @@ value:emittedObject
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;And that&amp;rsquo;s pretty much the magic under mongo map reduce function. I&amp;rsquo;ll comeback to finish with the Spring side&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Huizúcar-SNAPSHOT</title>
-      <link>https://lnramirez.github.io/post/huizucar-snapshot/</link>
-      <pubDate>Sat, 09 Jun 2012 00:00:00 +0000</pubDate>
-      
-      <guid>https://lnramirez.github.io/post/huizucar-snapshot/</guid>
-      <description>&lt;p&gt;I was not planning deploying SNAPSHOTS but I was adding security functionality and felt so tempted to deploy it and I am so happy I did.&lt;/p&gt;
-
-&lt;p&gt;Although the only new feauture is login/logout functionality and securing edit and add blog entries I think it was worthy doing it, and since at least as of today deploying new version doesn&amp;rsquo;t mean spend more money, why not?&lt;/p&gt;
-
-&lt;p&gt;Hopefully I will have done few thing here and there by the end of the week and recap Huizúcar iteration. Until then.&lt;/p&gt;
 </description>
     </item>
     
