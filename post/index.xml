@@ -16,29 +16,38 @@
       <guid>https://lnramirez.github.io/post/systems-vs-goals/</guid>
       <description>&lt;p&gt;Though I consider myself primarily a developer I&amp;rsquo;m also trained in economics and finance, so from time to time I read about stuff not your steriotypcal developer reads, such as persuassion, finance debacles and economy (knowingly that economic schools are a best attempt at decypherying what they can&amp;rsquo;t).&lt;/p&gt;
 
-&lt;p&gt;Lately I read &lt;a href=&#34;http://amzn.to/1oTGu8x&#34;&gt;Scott Adam&amp;rsquo;s book&lt;/a&gt; latest book and find it quite interesting. Go read it and thank me later.
-One of his main points is that should thrive for setting a system and not goals, instead of setting yourself a goal to lose 10 pounds set in place a system to be healthier by eating everyday healthy stuff, whatever that means for you, but the point is focusing on the everyday efforts instead of the goal you are trying to achieve. True, if you lose 10 pounds you might be healthier and that&amp;rsquo;s the expected outcome but you lose yourself on achiving a goal and not on how to reach it. And worst of all once you reach your goal you might toss all you put in place and bam you are back 10 pounds heavier or worse.&lt;/p&gt;
+&lt;p&gt;I read &lt;a href=&#34;http://amzn.to/1oTGu8x&#34;&gt;Scott Adam&amp;rsquo;s book&lt;/a&gt; latest book and find it quite interesting. Go read it and thank me later.
+One of his main points is that you should thrive for setting a system and not goals, instead of setting yourself a goal to lose 10 pounds set in place a system to be healthier by eating everyday healthy stuff, whatever that means for you, but the point is focusing on the everyday efforts instead of the goal you are trying to achieve. True, if you lose 10 pounds you might be healthier and that&amp;rsquo;s the expected outcome but you lose yourself on achiving a goal and not on how to reach it. And worst of all once you reach your goal you might toss all you put in place and bam you are back 10 pounds heavier or worse.&lt;/p&gt;
 
 &lt;p&gt;I keep hearing same phrase by different people, amongst them, authors, CFOs, CEOs: &lt;em&gt;people overestimate what they can achieve in 1 or 2 years but they underestimate what they can achieve in 5 or 10 years&lt;/em&gt;. I heard it diferently too, that we overestimate the future in the short run but underestimate it in the long run. 10 years ago everybody was using Blackberries and now we use our iPhones to call Uber drivers, facetime with someone around the globe, watch our movies, stay up to date with our global village and so on.&lt;/p&gt;
 
 &lt;p&gt;And what does that have to do with Systems vs Goals you ask? well, I think I&amp;rsquo;ve witness in the past that if you set yourself a system vs goals you achieve way more stuff if you set yourself goals.&lt;/p&gt;
 
-&lt;p&gt;Back in the day, around 2004 I used to work for a Salvadorean company (if you don&amp;rsquo;t know where El Salvador is, lets say is a third world country) and we were pretty much pre-agile revolution (agile is Circa ~ 2001), our system for developing software was pretty much like this:
-* We need a software system to track our routes
-* Let&amp;rsquo;s throw two months with one developer working 70%
-* She will gather requirements from final users in 2 weeks
-* Start coding on the third week
-* And lets test last two weeks&lt;/p&gt;
+&lt;p&gt;Back in the day, around 2004 I used to work for a Salvadorean company (if you don&amp;rsquo;t know where El Salvador is, lets say is a third world country) and we were pretty much pre-agile revolution (agile is Circa ~ 2001), our system for developing software was pretty much like this:&lt;/p&gt;
 
-&lt;p&gt;Pretty much the Waterfall model with some nasty exploitation of resources such as your truly blogger. In the end if I recall correctly the system I developed was doomed, totatlly out of context with what the VP wanted and what the users needed and myself frustrated because that system never was in production. I wasted more than 2 months working on it with overtime that I will never get back. The goal was for me to develop a software and comply with project budget and time. Utter shennaningans.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;We need a software system to track our routes&lt;/li&gt;
+&lt;li&gt;Let&amp;rsquo;s throw two months with one developer working 70%&lt;/li&gt;
+&lt;li&gt;She will gather requirements from final users in 2 weeks&lt;/li&gt;
+&lt;li&gt;Start coding on the third week&lt;/li&gt;
+&lt;li&gt;And lets test last two weeks&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;When I came to the States in 2010 I joined a small goverment contractor and they had established Agile principles, I know this is 2016 and Agile is the best since sliced bread or the worst for some folks, I don&amp;rsquo;t get religious on either camp, but what I can tell you is that an agile shop establishes a &lt;em&gt;system&lt;/em&gt;, you set goals for every sprint, you do estimation on the roadmap of your productand what not, but the important part is you set a system. Every sprint we will produce something that actually runs and we present to our customer new features, some get tossed others get critiziced and some get approved and praised, we have happier users and happier developers. Back in my story users were disappointed on the IT department and myself after working hard felt frustrated. On my states&amp;rsquo; story I remember our users were on average happy (they kept hiring the company) and I was stoked that people didn&amp;rsquo;t yell at me and I pretty much work a normal week.&lt;/p&gt;
+&lt;p&gt;Pretty much the Waterfall model with some nasty exploitation of resources such as your truly blogger.&lt;/p&gt;
 
-&lt;p&gt;Agile is an umbrella of practices and over the years I&amp;rsquo;ve worked for more than 3 companies using some sort of agile system. Every company defines what they understand by those practices, but most of them work more on the system on how to develop good quality software rather than focus on the final goal, the final goal or product by all means is never what you think in the begging, it gets shaped by users and product owners, you can&amp;rsquo;t know what you want until you actually see it, then you know. The goal is not lose 10 pounds, is get healthier whatever that means for you. You won&amp;rsquo;t know until you reach it and if you develop a system you will know when you get there.&lt;/p&gt;
+&lt;p&gt;In the end if I recall correctly the system I developed was doomed, totally out of context with what the VP wanted and what the users needed and myself frustrated because that product never saw the light in production. I wasted more than 2 months working on it with overtime that I will never get back. The goal was for me to develop a software and comply with project budget and time. Utter shennaningans.&lt;/p&gt;
+
+&lt;p&gt;When I came to the States in 2010 I joined a small goverment contractor and they had established Agile principles, I know this is 2016 and Agile is the best since sliced bread or the worst for some folks depending on which camp you are, I don&amp;rsquo;t get religious on either one but what I can tell you is that an agile shop establishes a &lt;em&gt;system&lt;/em&gt;, you set goals for every sprint, you do estimation on the roadmap of your product and what not, the important part is you set a system.&lt;/p&gt;
+
+&lt;p&gt;Every sprint we will produce something that actually runs and we present to our customer new features, some get tossed others get critiziced and some get approved and praised, we have happier users and happier developers. Back in my story users were disappointed on the IT department. On my states&amp;rsquo; story I remember our users were on average happy (they kept hiring the company) and I was stoked that people didn&amp;rsquo;t yell at me and I pretty much work a normal week.&lt;/p&gt;
+
+&lt;p&gt;If I had worked systematically, although would have been only for 4 sprint, maybe there would be a product still running and some good memories on how I did something worth remembering. A goal was set for me to achieve within a certain period of time, there was no system, I couldn&amp;rsquo;t achieve the goal. With a system within two weeks I would have something working that could have been improved instead of a doomed product that nobody cared about.&lt;/p&gt;
+
+&lt;p&gt;Agile is an umbrella of practices and over the years I&amp;rsquo;ve worked for more than 3 companies using some sort of agile system. Every company defines what they understand by those practices and interestingly most of them work, the focuse is more on the system on how to develop good quality software rather than focus on the final goal. In my experience the final goal or product by all means is never what you think in the begging, it gets shaped by users and product owners, you can&amp;rsquo;t know what you want until you actually see it, then you know. The goal is not lose 10 pounds, is get healthier whatever that means for you. You won&amp;rsquo;t know until you reach it and if you develop a system you will know when you get there.&lt;/p&gt;
 
 &lt;p&gt;—&lt;/p&gt;
 
-&lt;p&gt;If you liked this entry you might want to &lt;a href=&#34;www.linkedin.com/in/lnramirez&#34;&gt;hire me&lt;/a&gt; because the summer is almost over.&lt;/p&gt;
+&lt;p&gt;If you liked this entry you might want to &lt;a href=&#34;http://www.linkedin.com/in/lnramirez&#34;&gt;hire me&lt;/a&gt; because the summer is officially over.&lt;/p&gt;
 </description>
     </item>
     
